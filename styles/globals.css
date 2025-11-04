@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gray: #151515;
+}
+
+.text-small {
+  font-size: var(--heroui-font-size-large);
+}
+
+@config "../tailwind.config.js";
