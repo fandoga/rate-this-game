@@ -2,20 +2,27 @@
 
 import { Slider } from "@heroui/slider";
 import { Button } from "@heroui/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/utils/hooksRedux";
+import { rateSlice } from "@/store/reducers/rateSlice";
 
 const RatingBlock = () => {
+  const dispatch = useAppDispatch();
+  const { rating } = useAppSelector((state) => state.rateSlice);
+  const { setScore } = rateSlice.actions;
   const [Story, setStory] = useState<any>(4);
   const [Visual, setVisual] = useState<any>(4);
   const [Gameplay, setGameplay] = useState<any>(4);
   const [Tech, setTech] = useState<any>(4);
 
-  const resultValue: number = useMemo(() => {
-    return Math.floor(((Story + Visual + Gameplay + Tech) * 10) / 4);
+  useEffect(() => {
+    dispatch(
+      setScore(Math.floor(((Story + Visual + Gameplay + Tech) * 10) / 4))
+    );
   }, [Story, Visual, Gameplay, Tech]);
 
   return (
-    <div>
+    <div className="fixed">
       <div>
         <h2 className="text-4xl font-semibold mb-16">test</h2>
       </div>
@@ -62,7 +69,7 @@ const RatingBlock = () => {
         />
       </div>
       <div className="flex mt-20 justify-between">
-        <h1 className="text-7xl font-bold">{resultValue ?? 40}</h1>
+        <h1 className="text-7xl font-bold">{rating.score ?? 40}</h1>
         <Button size="lg" color="secondary">
           Confirm
         </Button>
