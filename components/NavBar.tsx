@@ -1,41 +1,119 @@
 "use client";
 
-import { Input } from "@heroui/react";
-import { useEffect, useState, type ChangeEvent, type Dispatch, type SetStateAction } from "react";
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Chip,
+  Input,
+  Select,
+  SelectItem,
+} from "@heroui/react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+  type ChangeEvent,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 
 import { useLazySearchGamesQuery } from "@/store/services/rawgApi";
-import { useAppDispatch } from "@/utils/hooksRedux";
+import { useAppDispatch, useAppSelector } from "@/utils/hooksRedux";
 import { rateSlice } from "@/store/reducers/rateSlice";
 import debounce from "debounce";
 
 const NavBar = () => {
-  const { setGame } = rateSlice.actions
-  const { setLastSearchQuery } = rateSlice.actions
-  const dispatch = useAppDispatch()
+  const { setGame, setLastSearchQuery } = rateSlice.actions;
+  const dispatch = useAppDispatch();
   const [trigger, { data, isFetching }] = useLazySearchGamesQuery();
-  const [value, setValue] = useState<string>('')
+  const q = useAppSelector((s) => s.rateSlice.lastSearchQuery);
 
-  // const handleSearch = (value : string) => {
-  //   trigger({ query: value, page: 1 })
-  //   dispatch(setLastSearchQuery(value))
-  // }
+  const gamesList = useMemo(() => {
+    const results = data?.results ?? [];
+    return [...results].sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+  }, [data]);
 
-const handleSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-    trigger({ query: e.target.value, page: 1 })
-    dispatch(setLastSearchQuery(e.target.value))
-}, 300)
+  const results = q ? gamesList : [];
 
+  const handleSearch = debounce((value: string) => {
+    const q = value.trim();
+    dispatch(setLastSearchQuery(q));
+    if (q.length > 0) {
+      trigger({ query: q, page: 1, page_size: 20 });
+    }
+  }, 300);
 
   return (
-    <div className="flex flex-col w-full pb-10 pt-10 bg-gray items-center">
-      <Input
-        onChange={handleSearch}
-        size="sm"
+    <div className="flex flex-col w-full gap-2 pb-4 pt-4 bg-gray items-center">
+      <Autocomplete
+        items={results}
+        onInputChange={handleSearch}
+        onSelectionChange={(val) => {
+          const selected = gamesList.find((g) => String(g.id) === String(val));
+          if (selected) dispatch(setGame(selected));
+        }}
+        placeholder="Search for games"
         isClearable
         className="max-w-md"
-        label="Search for games"
+        type="text"
+        allowsEmptyCollection={true}
+        selectorIcon={""}
+        isLoading={isFetching}
+        menuTrigger="input"
+        onClear={() => {
+          dispatch(setLastSearchQuery(""));
+        }}
+        listboxProps={{
+          emptyContent: q ? "Nothing to show" : "Loading...",
+        }}
+      >
+        {(game) => (
+          <AutocompleteItem key={game.id} textValue={game.name}>
+            <div className="flex gap-2 items-center">
+              <img
+                src={game.background_image}
+                alt={game.name}
+                className="w-16 h-16 object-cover rounded"
+              />
+              <div className="flex flex-col">
+                <span className="text-small">{game.name}</span>
+              </div>
+            </div>
+          </AutocompleteItem>
+        )}
+      </Autocomplete>
+      {/* <Input
+        onChange={handleSearch}
+        placeholder="Search for games..."
+        isClearable
+        className="max-w-md"
         type="text"
       />
+      <Select
+        classNames={{
+          base: "max-w-md",
+          trigger: "min-h-12 py-2",
+        }}
+        isMultiline={true}
+        placeholder="Select a game"
+        items={gamesList}
+        variant="bordered"
+      >
+        {(game) => (
+          <SelectItem key={game.id} textValue={game.name}>
+            <div className="flex gap-2 items-center">
+              <img
+                src={game.background_image}
+                alt={game.name}
+                className="w-16 h-16 object-cover rounded"
+              />
+              <div className="flex flex-col">
+                <span className="text-small">{game.name}</span>
+              </div>
+            </div>
+          </SelectItem>
+        )}
+      </Select> */}
     </div>
   );
 };

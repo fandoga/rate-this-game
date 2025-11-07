@@ -2,34 +2,32 @@
 
 import { Slider } from "@heroui/slider";
 import { Button } from "@heroui/react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/utils/hooksRedux";
 import { rateSlice } from "@/store/reducers/rateSlice";
 
 const RatingBlock = () => {
   const dispatch = useAppDispatch();
-  const { rating } = useAppSelector((state) => state.rateSlice);
   const { setScore } = rateSlice.actions;
+
   const [Story, setStory] = useState<any>(4);
   const [Visual, setVisual] = useState<any>(4);
   const [Gameplay, setGameplay] = useState<any>(4);
   const [Tech, setTech] = useState<any>(4);
 
-  useEffect(() => {
-    dispatch(
-      setScore(Math.floor(((Story + Visual + Gameplay + Tech) * 10) / 4))
-    );
+  const resultValue: number = useMemo(() => {
+    return Math.floor(((Story + Visual + Gameplay + Tech) * 10) / 4);
   }, [Story, Visual, Gameplay, Tech]);
 
   return (
-    <div className="fixed">
+    <div className="bg-gray h-140 p-7 rounded-lg w-fit">
       <div>
-        <h2 className="text-4xl font-semibold mb-16">test</h2>
+        <h2 className="text-3xl font-semibold mb-16">Make a review</h2>
       </div>
-      <div className="inline-grid grid-rows-2 grid-cols-2 gap-x-20 gap-y-8 items-center w-fit">
+      <div className="inline-grid grid-rows-2 grid-cols-2 gap-x-20 gap-y-8 items-center">
         <Slider
           onChange={(val) => setStory(val)}
-          className="w-md"
+          className="w-sm"
           defaultValue={4}
           label="Сюжет"
           color="secondary"
@@ -39,7 +37,7 @@ const RatingBlock = () => {
         />
         <Slider
           onChange={(val) => setVisual(val)}
-          className="w-md"
+          className="w-sm"
           defaultValue={4}
           label="Визуал"
           color="secondary"
@@ -49,7 +47,7 @@ const RatingBlock = () => {
         />
         <Slider
           onChange={(val) => setGameplay(val)}
-          className="w-md"
+          className="w-sm"
           defaultValue={4}
           label="Геймплей"
           color="secondary"
@@ -59,7 +57,7 @@ const RatingBlock = () => {
         />
         <Slider
           onChange={(val) => setTech(val)}
-          className="w-md"
+          className="w-sm"
           defaultValue={4}
           label="Тех. часть"
           color="secondary"
@@ -69,8 +67,12 @@ const RatingBlock = () => {
         />
       </div>
       <div className="flex mt-20 justify-between">
-        <h1 className="text-7xl font-bold">{rating.score ?? 40}</h1>
-        <Button size="lg" color="secondary">
+        <h1 className="text-7xl font-bold">{resultValue ?? 40}</h1>
+        <Button
+          size="lg"
+          color="secondary"
+          onClick={() => dispatch(setScore(resultValue))}
+        >
           Confirm
         </Button>
       </div>

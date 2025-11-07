@@ -12,6 +12,7 @@ export interface RawgGame {
   released?: string;
   background_image?: string;
   rating?: number;
+  score: number;
 }
 
 export interface RawgPaginatedResponse<T> {
