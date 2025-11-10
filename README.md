@@ -1,53 +1,98 @@
-# Next.js & HeroUI Template
+## Rate This Game
 
-This is a template for creating applications using Next.js 14 (app directory) and HeroUI (v2).
+Приложение на Next.js для поиска и оценки видеоигр с использованием публичного RAWG API. Интерфейс построен на HeroUI и Tailwind CSS, состояние — через Redux Toolkit (RTK Query).
 
-[Try it on CodeSandbox](https://githubbox.com/heroui-inc/heroui/next-app-template)
+### Технологии
 
-## Technologies Used
+- **Next.js 15 (App Router)**
+- **React 18**, **TypeScript**
+- **HeroUI v2**, **Tailwind CSS 4**
+- **Redux Toolkit**, **RTK Query**, **react-redux**
+<!-- - **next-themes** (тёмная/светлая темы) -->
 
-- [Next.js 14](https://nextjs.org/docs/getting-started)
-- [HeroUI v2](https://heroui.com/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Tailwind Variants](https://tailwind-variants.org)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [next-themes](https://github.com/pacocoursey/next-themes)
+## Быстрый старт
 
-## How to Use
-
-### Use the template with create-next-app
-
-To create a new project based on this template using `create-next-app`, run the following command:
-
-```bash
-npx create-next-app -e https://github.com/heroui-inc/next-app-template
-```
-
-### Install dependencies
-
-You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
+1. Установите зависимости:
 
 ```bash
 npm install
 ```
 
-### Run the development server
+2. Создайте `.env.local` в корне проекта и добавьте ключ RAWG:
+
+```bash
+NEXT_PUBLIC_RAWG_API_KEY=ВАШ_КЛЮЧ_RAWG
+```
+
+3. Запустите приложение в режиме разработки:
 
 ```bash
 npm run dev
 ```
 
-### Setup pnpm (optional)
+Приложение будет доступно на `http://localhost:3000`.
 
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
+## Скрипты
 
-```bash
-public-hoist-pattern[]=*@heroui/*
+- `npm run dev` — запуск dev-сервера Next.js (с Turbopack)
+- `npm run build` — продакшн-сборка
+- `npm run start` — запуск собранного приложения
+- `npm run lint` — запуск ESLint (с автоисправлениями)
+
+## Переменные окружения
+
+- `NEXT_PUBLIC_RAWG_API_KEY` — публичный ключ RAWG API. Используется в `store/services/rawgApi.ts`, автоматически добавляется как параметр `key` ко всем запросам.
+
+Создайте файл `.env.local` (не коммитьте его) и укажите значение.
+
+## Структура проекта
+
+```
+app/
+  error.tsx               # Страница ошибки
+  layout.tsx              # Корневой layout App Router
+  page.tsx                # Главная страница
+  providers.tsx           # Провайдеры темы, Redux и т.п.
+
+components/
+  GameBlock.tsx           # Карточка/блок игры
+  NavBar.tsx              # Навигационная панель
+  RatingBlock.tsx         # Блок оценки игры
+
+config/
+  fonts.ts                # Подключение шрифтов
+  site.ts                 # Константы сайта
+
+store/
+  reducers/
+    rateSlice.ts          # Slice для локальных оценок/рейтингов
+  services/
+    rawgApi.ts            # RTK Query API для RAWG
+  store.ts                # Конфигурация Redux store
+
+styles/
+  globals.css             # Глобальные стили (Tailwind)
+
+types/
+  index.ts                # Типы данных (RawgGame и пр.)
+
+utils/
+  hooksRedux.ts           # Хуки useAppDispatch/useAppSelector
+
+tailwind.config.js        # Tailwind + HeroUI плагин
+next.config.js            # Конфиг Next.js
+eslint.config.mjs         # Настройки ESLint
+tsconfig.json             # Настройки TypeScript
 ```
 
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
+## Архитектура и ключевые моменты
 
-## License
+- **App Router** (`app/`): маршрутизация, общий `layout`, провайдеры в `providers.tsx`.
+- **RTK Query** (`store/services/rawgApi.ts`): эндпоинты `searchGames`, `getGameById`; API-ключ добавляется в `paramsSerializer`.
+- **Redux store** (`store/store.ts`): подключение `rawgApi.reducer`, `rateSlice`, мидлварь RTK Query.
+- **UI**: компоненты в `components/`, стили через Tailwind; HeroUI подключён через плагин в `tailwind.config.js`.
+<!-- - **Темы**: `next-themes` с режимом `class` (см. `tailwind.config.js` и провайдеры). -->
 
-Licensed under the [MIT license](https://github.com/heroui-inc/next-app-template/blob/main/LICENSE).
+## Лицензия
+
+MIT. См. файл `LICENSE`.

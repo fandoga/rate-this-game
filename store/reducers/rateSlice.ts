@@ -24,6 +24,7 @@ const initialState: RateState = {
     background_image: "",
     rating: 0,
     score: 0,
+    ratings_count: 0,
   },
   selectedGameId: null,
   lastSearchQuery: "",

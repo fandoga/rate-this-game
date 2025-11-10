@@ -30,7 +30,9 @@ const NavBar = () => {
 
   const gamesList = useMemo(() => {
     const results = data?.results ?? [];
-    return [...results].sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+    return [...results].sort(
+      (a, b) => (b.ratings_count ?? 0) - (a.ratings_count ?? 0)
+    );
   }, [data]);
 
   const results = q ? gamesList : [];
@@ -52,7 +54,7 @@ const NavBar = () => {
           const selected = gamesList.find((g) => String(g.id) === String(val));
           if (selected) dispatch(setGame(selected));
         }}
-        placeholder="Search for games"
+        placeholder="Найти свою игру"
         isClearable
         className="max-w-md"
         type="text"
@@ -64,7 +66,7 @@ const NavBar = () => {
           dispatch(setLastSearchQuery(""));
         }}
         listboxProps={{
-          emptyContent: q ? "Nothing to show" : "Loading...",
+          emptyContent: q ? "Нечего показывать" : "Подождите...",
         }}
       >
         {(game) => (

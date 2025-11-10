@@ -8,7 +8,7 @@ const GameBlock = () => {
   return (
     <div>
       {game.name.length > 0 && (
-        <div className="max-w-lg h-140 bg-gray p-7 rounded-lg">
+        <div className="max-w-lg h-120 bg-gray p-7 rounded-lg">
           <img
             className="rounded-lg"
             src={game.background_image}

@@ -9,20 +9,25 @@ import { rateSlice } from "@/store/reducers/rateSlice";
 const RatingBlock = () => {
   const dispatch = useAppDispatch();
   const { setScore } = rateSlice.actions;
+  const { game } = useAppSelector((state) => state.rateSlice);
 
   const [Story, setStory] = useState<any>(4);
   const [Visual, setVisual] = useState<any>(4);
   const [Gameplay, setGameplay] = useState<any>(4);
   const [Tech, setTech] = useState<any>(4);
 
+  const isGameSelected = game.id > 0 ? true : false;
+
   const resultValue: number = useMemo(() => {
     return Math.floor(((Story + Visual + Gameplay + Tech) * 10) / 4);
   }, [Story, Visual, Gameplay, Tech]);
 
   return (
-    <div className="bg-gray h-140 p-7 rounded-lg w-fit">
+    <div className="bg-gray h-120 p-7 rounded-lg w-fit">
       <div>
-        <h2 className="text-3xl font-semibold mb-16">Make a review</h2>
+        <h2 className="text-3xl font-semibold mb-16">
+          {isGameSelected ? "Оцените эту игру" : "Сначала выберети игру"}
+        </h2>
       </div>
       <div className="inline-grid grid-rows-2 grid-cols-2 gap-x-20 gap-y-8 items-center">
         <Slider
@@ -30,6 +35,7 @@ const RatingBlock = () => {
           className="w-sm"
           defaultValue={4}
           label="Сюжет"
+          isDisabled={!isGameSelected}
           color="secondary"
           maxValue={10}
           minValue={1}
@@ -40,6 +46,7 @@ const RatingBlock = () => {
           className="w-sm"
           defaultValue={4}
           label="Визуал"
+          isDisabled={!isGameSelected}
           color="secondary"
           maxValue={10}
           minValue={1}
@@ -50,6 +57,7 @@ const RatingBlock = () => {
           className="w-sm"
           defaultValue={4}
           label="Геймплей"
+          isDisabled={!isGameSelected}
           color="secondary"
           maxValue={10}
           minValue={1}
@@ -60,6 +68,7 @@ const RatingBlock = () => {
           className="w-sm"
           defaultValue={4}
           label="Тех. часть"
+          isDisabled={!isGameSelected}
           color="secondary"
           maxValue={10}
           minValue={1}
@@ -67,13 +76,16 @@ const RatingBlock = () => {
         />
       </div>
       <div className="flex mt-20 justify-between">
-        <h1 className="text-7xl font-bold">{resultValue ?? 40}</h1>
+        <h1 className="text-7xl font-bold">
+          {isGameSelected ? resultValue : "..."}
+        </h1>
         <Button
           size="lg"
           color="secondary"
+          isDisabled={!isGameSelected}
           onClick={() => dispatch(setScore(resultValue))}
         >
-          Confirm
+          Подтвердить
         </Button>
       </div>
     </div>
