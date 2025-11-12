@@ -15,21 +15,22 @@ const RatingBlock = () => {
   const [Visual, setVisual] = useState<any>(4);
   const [Gameplay, setGameplay] = useState<any>(4);
   const [Tech, setTech] = useState<any>(4);
+  const [Sub, setSub] = useState<any>(4);
 
   const isGameSelected = game.id > 0 ? true : false;
 
   const resultValue: number = useMemo(() => {
-    return Math.floor(((Story + Visual + Gameplay + Tech) * 10) / 4);
-  }, [Story, Visual, Gameplay, Tech]);
+    return Math.floor((Story + Visual + Gameplay + Tech) * 1.4 + Sub * 4.4);
+  }, [Story, Visual, Gameplay, Tech, Sub]);
 
   return (
-    <div className="bg-gray h-120 p-7 rounded-lg w-fit">
+    <div className="bg-gray h-130 p-7 rounded-lg w-fit">
       <div>
         <h2 className="text-3xl font-semibold mb-16">
           {isGameSelected ? "Оцените эту игру" : "Сначала выберети игру"}
         </h2>
       </div>
-      <div className="inline-grid grid-rows-2 grid-cols-2 gap-x-20 gap-y-8 items-center">
+      <div className="inline-grid grid-rows-2 grid-cols-2 gap-x-10 gap-y-8 items-center">
         <Slider
           onChange={(val) => setStory(val)}
           className="w-sm"
@@ -70,6 +71,17 @@ const RatingBlock = () => {
           label="Тех. часть"
           isDisabled={!isGameSelected}
           color="secondary"
+          maxValue={10}
+          minValue={1}
+          step={1}
+        />
+        <Slider
+          onChange={(val) => setSub(val)}
+          className="col-span-2 w-full"
+          defaultValue={4}
+          label="Общие впечатления"
+          isDisabled={!isGameSelected}
+          color="primary"
           maxValue={10}
           minValue={1}
           step={1}

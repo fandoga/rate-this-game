@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { rawgApi } from "@/store/services/rawgApi";
 import { RawgGame } from "@/types";
 
 interface RateState {
@@ -19,8 +20,16 @@ const initialState: RateState = {
   game: {
     id: 0,
     name: "",
+    description_raw: "",
     slug: "",
     released: "",
+    platforms: [
+      {
+        platform: {
+          slug: "",
+        },
+      },
+    ],
     background_image: "",
     rating: 0,
     score: 0,
@@ -60,6 +69,22 @@ export const rateSlice = createSlice({
     setLastSearchQuery(state, action: PayloadAction<string>) {
       state.lastSearchQuery = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addMatcher(rawgApi.endpoints.getGameById.matchPending, (state) => {
+        state.isLoading = true;
+      })
+      .addMatcher(
+        rawgApi.endpoints.getGameById.matchFulfilled,
+        (state, { payload }) => {
+          state.game = payload;
+          state.isLoading = false;
+        }
+      )
+      .addMatcher(rawgApi.endpoints.getGameById.matchRejected, (state) => {
+        state.isLoading = false;
+      });
   },
 });
 

@@ -17,16 +17,22 @@ import {
   type SetStateAction,
 } from "react";
 
-import { useLazySearchGamesQuery } from "@/store/services/rawgApi";
+import {
+  useLazySearchGamesQuery,
+  useLazyGetGameByIdQuery,
+} from "@/store/services/rawgApi";
 import { useAppDispatch, useAppSelector } from "@/utils/hooksRedux";
 import { rateSlice } from "@/store/reducers/rateSlice";
 import debounce from "debounce";
+import { RawgGame } from "@/types";
 
 const NavBar = () => {
   const { setGame, setLastSearchQuery } = rateSlice.actions;
   const dispatch = useAppDispatch();
   const [trigger, { data, isFetching }] = useLazySearchGamesQuery();
+  const [fetchGameById] = useLazyGetGameByIdQuery();
   const q = useAppSelector((s) => s.rateSlice.lastSearchQuery);
+  const [currentGame, setCurrentGame] = useState<RawgGame>();
 
   const gamesList = useMemo(() => {
     const results = data?.results ?? [];
@@ -45,6 +51,16 @@ const NavBar = () => {
     }
   }, 300);
 
+  const getGame = (sel: RawgGame) => {
+    // Optimistically set selected summary
+    setCurrentGame(sel);
+    dispatch(setGame(sel));
+    // Fetch full game details; slice will update on fulfillment
+    if (sel.id !== 0) {
+      fetchGameById(sel.id);
+    }
+  };
+
   return (
     <div className="flex flex-col w-full gap-2 pb-4 pt-4 bg-gray items-center">
       <Autocomplete
@@ -52,8 +68,10 @@ const NavBar = () => {
         onInputChange={handleSearch}
         onSelectionChange={(val) => {
           const selected = gamesList.find((g) => String(g.id) === String(val));
-          if (selected) dispatch(setGame(selected));
+          if (selected) getGame(selected);
+          // if (currentGame) dispatch(setGame(currentGame));
         }}
+        aria-label="Поиск игры"
         placeholder="Найти свою игру"
         isClearable
         className="max-w-md"
@@ -84,38 +102,11 @@ const NavBar = () => {
           </AutocompleteItem>
         )}
       </Autocomplete>
-      {/* <Input
-        onChange={handleSearch}
-        placeholder="Search for games..."
-        isClearable
-        className="max-w-md"
-        type="text"
-      />
-      <Select
-        classNames={{
+
+      {/* classNames={{
           base: "max-w-md",
           trigger: "min-h-12 py-2",
-        }}
-        isMultiline={true}
-        placeholder="Select a game"
-        items={gamesList}
-        variant="bordered"
-      >
-        {(game) => (
-          <SelectItem key={game.id} textValue={game.name}>
-            <div className="flex gap-2 items-center">
-              <img
-                src={game.background_image}
-                alt={game.name}
-                className="w-16 h-16 object-cover rounded"
-              />
-              <div className="flex flex-col">
-                <span className="text-small">{game.name}</span>
-              </div>
-            </div>
-          </SelectItem>
-        )}
-      </Select> */}
+        }} */}
     </div>
   );
 };

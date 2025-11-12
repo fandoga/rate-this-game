@@ -8,7 +8,15 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 export interface RawgGame {
   id: number;
   name: string;
+  description_raw: string;
   slug: string;
+  platforms?: [
+    {
+      platform: {
+        slug: string;
+      };
+    },
+  ];
   released?: string;
   background_image?: string;
   rating?: number;
