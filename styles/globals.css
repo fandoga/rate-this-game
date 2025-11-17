@@ -2,6 +2,7 @@
 
 @theme {
   --color-gray: #0b0b0b;
+  --shadow-lg: 0 0 15px 0px rgb(0 0 0 / 0.1);
 }
 
 .text-small {

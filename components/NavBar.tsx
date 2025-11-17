@@ -1,107 +1,19 @@
 "use client";
 
-import {
-  Autocomplete,
-  AutocompleteItem,
-  Chip,
-  Input,
-  Select,
-  SelectItem,
-} from "@heroui/react";
-import {
-  useEffect,
-  useMemo,
-  useState,
-  type ChangeEvent,
-  type Dispatch,
-  type SetStateAction,
-} from "react";
-
-import {
-  useLazySearchGamesQuery,
-  useLazyGetGameByIdQuery,
-} from "@/store/services/rawgApi";
-import { useAppDispatch, useAppSelector } from "@/utils/hooksRedux";
-import { rateSlice } from "@/store/reducers/rateSlice";
-import debounce from "debounce";
-import { RawgGame } from "@/types";
+import Search from "./Search";
+import NavButton from "./NavButton";
 
 const NavBar = () => {
-  const { setGame, setLastSearchQuery } = rateSlice.actions;
-  const dispatch = useAppDispatch();
-  const [trigger, { data, isFetching }] = useLazySearchGamesQuery();
-  const [fetchGameById] = useLazyGetGameByIdQuery();
-  const q = useAppSelector((s) => s.rateSlice.lastSearchQuery);
-  const [currentGame, setCurrentGame] = useState<RawgGame>();
-
-  const gamesList = useMemo(() => {
-    const results = data?.results ?? [];
-    return [...results].sort(
-      (a, b) => (b.ratings_count ?? 0) - (a.ratings_count ?? 0)
-    );
-  }, [data]);
-
-  const results = q ? gamesList : [];
-
-  const handleSearch = debounce((value: string) => {
-    const q = value.trim();
-    dispatch(setLastSearchQuery(q));
-    if (q.length > 0) {
-      trigger({ query: q, page: 1, page_size: 20 });
-    }
-  }, 300);
-
-  const getGame = (sel: RawgGame) => {
-    // Optimistically set selected summary
-    setCurrentGame(sel);
-    dispatch(setGame(sel));
-    // Fetch full game details; slice will update on fulfillment
-    if (sel.id !== 0) {
-      fetchGameById(sel.id);
-    }
-  };
+  const svgHome =
+    "m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25";
+  const svgProfile =
+    "M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z";
 
   return (
-    <div className="flex flex-col w-full gap-2 pb-4 pt-4 bg-gray items-center">
-      <Autocomplete
-        items={results}
-        onInputChange={handleSearch}
-        onSelectionChange={(val) => {
-          const selected = gamesList.find((g) => String(g.id) === String(val));
-          if (selected) getGame(selected);
-          // if (currentGame) dispatch(setGame(currentGame));
-        }}
-        aria-label="Поиск игры"
-        placeholder="Найти свою игру"
-        isClearable
-        className="max-w-md"
-        type="text"
-        allowsEmptyCollection={true}
-        selectorIcon={""}
-        isLoading={isFetching}
-        menuTrigger="input"
-        onClear={() => {
-          dispatch(setLastSearchQuery(""));
-        }}
-        listboxProps={{
-          emptyContent: q ? "Нечего показывать" : "Подождите...",
-        }}
-      >
-        {(game) => (
-          <AutocompleteItem key={game.id} textValue={game.name}>
-            <div className="flex gap-2 items-center">
-              <img
-                src={game.background_image}
-                alt={game.name}
-                className="w-16 h-16 object-cover rounded"
-              />
-              <div className="flex flex-col">
-                <span className="text-small">{game.name}</span>
-              </div>
-            </div>
-          </AutocompleteItem>
-        )}
-      </Autocomplete>
+    <div className="flex justify-between w-full gap-2 mx-auto px-10 pb-4 pt-4 bg-gray items-center">
+      <NavButton href="/" svg={svgHome} />
+      <Search />
+      <NavButton href="/profile" svg={svgProfile} />
 
       {/* classNames={{
           base: "max-w-md",

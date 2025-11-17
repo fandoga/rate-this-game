@@ -48,7 +48,7 @@ export const rawgApi = createApi({
     >({
       query: ({ query, page = 1, page_size = 20 }) => ({
         url: "games",
-        params: { search: query, search_exact: true, page, page_size },
+        params: { search: query, search_exact: false, page, page_size },
       }),
     }),
     getGameById: builder.query<RawgGame, number>({
