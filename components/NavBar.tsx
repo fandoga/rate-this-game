@@ -14,11 +14,6 @@ const NavBar = () => {
       <NavButton href="/" svg={svgHome} />
       <Search />
       <NavButton href="/profile" svg={svgProfile} />
-
-      {/* classNames={{
-          base: "max-w-md",
-          trigger: "min-h-12 py-2",
-        }} */}
     </div>
   );
 };

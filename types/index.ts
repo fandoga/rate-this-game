@@ -24,7 +24,7 @@ export interface RawgGame {
   ratings_count: number;
 }
 
-export interface RatedGame {
+export interface RatedGameType {
   id: number;
   name: string;
   bg_img: string;

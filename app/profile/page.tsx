@@ -1,12 +1,12 @@
 "use client";
 
 import RatedGamesList from "@/components/RatedGamesList";
-import { RatedGame } from "@/types";
+import { RatedGameType } from "@/types";
 import { loadRatedGame } from "@/utils/localStorage";
 import { useEffect, useState } from "react";
 
 export default function Profile() {
-  const [ratingList, setRatingList] = useState<RatedGame[]>([]);
+  const [ratingList, setRatingList] = useState<RatedGameType[]>([]);
   useEffect(() => {
     setRatingList(loadRatedGame());
   }, []);
@@ -21,7 +21,8 @@ export default function Profile() {
             У вас пока нет рецензий:(
           </h1>
           <a
-            className="text-indigo-500 font-semibold hover:text-shadow-lg text-shadow-indigo-500/40"
+            onClick={focus}
+            className="text-indigo-500 font-semibold underline-offset-6 hover:underline hover:text-shadow-lg text-shadow-indigo-500/30"
             href="/"
           >
             Начать оценивать

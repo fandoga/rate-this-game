@@ -1,3 +1,5 @@
+"use client";
+
 import { rateSlice } from "@/store/reducers/rateSlice";
 import {
   useLazyGetGameByIdQuery,
@@ -7,8 +9,17 @@ import { RawgGame } from "@/types";
 import { useAppDispatch, useAppSelector } from "@/utils/hooksRedux";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import debounce from "debounce";
-import { useMemo, useState } from "react";
+import {
+  ComponentPropsWithRef,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
+type AutocompleteRef = ComponentPropsWithRef<typeof Autocomplete>["ref"];
 const Search = () => {
   const { setGame, setLastSearchQuery } = rateSlice.actions;
   const dispatch = useAppDispatch();
@@ -16,6 +27,16 @@ const Search = () => {
   const [fetchGameById] = useLazyGetGameByIdQuery();
   const q = useAppSelector((s) => s.rateSlice.lastSearchQuery);
   const [currentGame, setCurrentGame] = useState<RawgGame>();
+  const pathname = usePathname();
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (pathname === "/") {
+      inputRef.current?.focus();
+    }
+  }, [pathname]);
 
   const gamesList = useMemo(() => {
     const results = data?.results ?? [];
@@ -44,19 +65,18 @@ const Search = () => {
 
   return (
     <Autocomplete
+      ref={inputRef as AutocompleteRef}
       items={results}
       onInputChange={handleSearch}
       onSelectionChange={(val) => {
         const selected = gamesList.find((g) => String(g.id) === String(val));
         if (selected) getGame(selected);
+        if (pathname !== "/") router.push("/");
       }}
       aria-label="Поиск игры"
       placeholder="Найти свою игру"
       isClearable
-      // className="max-w-md"
-      classNames={{
-        base: "max-w-md",
-      }}
+      className="transition-all max-w-md outline-none hover:shadow-lg rounded-xl shadow-indigo-500/50"
       type="text"
       allowsEmptyCollection={true}
       selectorIcon={""}
@@ -64,6 +84,7 @@ const Search = () => {
       menuTrigger="input"
       onClear={() => {
         dispatch(setLastSearchQuery(""));
+        dispatch(setGame({ name: "" }));
       }}
       listboxProps={{
         emptyContent: q ? "Нечего показывать" : "Подождите...",
