@@ -19,6 +19,25 @@ const RatingBlock = () => {
   const [Tech, setTech] = useState<number>(4);
   const [Sub, setSub] = useState<number>(4);
 
+  const [isPressed, setPress] = useState(false);
+
+  const check = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className="size-6"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="m4.5 12.75 6 6 9-13.5"
+      />
+    </svg>
+  );
+
   const sliders: SliderConfig[] = [
     {
       key: "Story",
@@ -55,6 +74,13 @@ const RatingBlock = () => {
   ];
 
   const isGameSelected = game.id > 0 ? true : false;
+
+  const onPress = () => {
+    setPress(true);
+    // setTimeout(() => {
+    //   setPress(false);
+    // }, 2000);
+  };
 
   const resultValue: number = useMemo(() => {
     return Math.floor((Story + Visual + Gameplay + Tech) * 1.4 + Sub * 4.4);
@@ -97,9 +123,12 @@ const RatingBlock = () => {
         </h1>
         <Button
           size="lg"
-          color="secondary"
-          isDisabled={!isGameSelected}
+          color={"secondary"}
+          className={`transform-all shadow-pink-400/50 ${isPressed ? "shadow-lg" : ""}`}
+          isDisabled={!isGameSelected || isPressed}
+          startContent={isPressed ? check : ""}
           onClick={() => {
+            onPress();
             dispatch(setScore(resultValue));
             saveRatedGame({
               id: game.id,
@@ -116,7 +145,7 @@ const RatingBlock = () => {
             });
           }}
         >
-          Подтвердить
+          {isPressed ? "Оценка принята" : "Подтвердить"}
         </Button>
       </div>
     </div>

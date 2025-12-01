@@ -1,9 +1,10 @@
 "use client";
 
 import { RatedGameType, RawgGame } from "@/types";
-import { loadRatedGame } from "@/utils/localStorage";
 import React, { useEffect, useState } from "react";
 import RatedGame from "./RatedGame";
+import RatedGameModal from "./RatedGameModal";
+import { useDisclosure } from "@heroui/modal";
 
 interface RatedGamesProps {
   ratingList: RatedGameType[];
@@ -11,7 +12,7 @@ interface RatedGamesProps {
 
 const RatedGamesList: React.FC<RatedGamesProps> = ({ ratingList }) => {
   return (
-    <section className="w-full">
+    <section className="w-full grid grid-cols-2 gap-8">
       {ratingList?.map((game) => <RatedGame key={game.id} game={game} />)}
     </section>
   );

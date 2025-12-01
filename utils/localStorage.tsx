@@ -1,4 +1,4 @@
-import { RatedGame } from "@/types";
+import { RatedGameType } from "@/types";
 
 const KEY = "ratedGames";
 
@@ -13,8 +13,18 @@ export const loadRatedGame = () => {
   }
 };
 
-export const saveRatedGame = (obj: RatedGame) => {
+export const saveRatedGame = (obj: RatedGameType) => {
   if (typeof window === "undefined") return [];
   const items = loadRatedGame();
-  localStorage.setItem(KEY, JSON.stringify([...items, obj]));
+  let alreadyHas = false;
+  items.map((item: RatedGameType) => {
+    if (item.id === obj.id) {
+      alreadyHas = true;
+    }
+  });
+  if (!alreadyHas) {
+    localStorage.setItem(KEY, JSON.stringify([...items, obj]));
+  } else {
+    return true;
+  }
 };
