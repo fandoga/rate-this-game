@@ -21,7 +21,6 @@ export default function Profile() {
             У вас пока нет рецензий:(
           </h1>
           <a
-            onClick={focus}
             className="text-indigo-500 font-semibold underline-offset-6 hover:underline hover:text-shadow-lg text-shadow-indigo-500/30"
             href="/"
           >
