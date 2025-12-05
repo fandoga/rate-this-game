@@ -1,6 +1,7 @@
 import { RatedGameType } from "@/types";
 
 const KEY = "ratedGames";
+const USER = "userData";
 
 export const loadRatedGame = () => {
   if (typeof window === "undefined") return [];
@@ -27,4 +28,9 @@ export const saveRatedGame = (obj: RatedGameType) => {
   } else {
     return true;
   }
+};
+
+export const setFirstVisit = () => {
+  if (typeof window === "undefined") return [];
+  localStorage.setItem(USER, JSON.stringify({ noFirstVisit: true }));
 };

@@ -3,8 +3,6 @@
 import { RatedGameType, RawgGame } from "@/types";
 import React, { useEffect, useState } from "react";
 import RatedGame from "./RatedGame";
-import RatedGameModal from "./RatedGameModal";
-import { useDisclosure } from "@heroui/modal";
 
 interface RatedGamesProps {
   ratingList: RatedGameType[];

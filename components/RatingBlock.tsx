@@ -77,9 +77,6 @@ const RatingBlock = () => {
 
   const onPress = () => {
     setPress(true);
-    // setTimeout(() => {
-    //   setPress(false);
-    // }, 2000);
   };
 
   const resultValue: number = useMemo(() => {
