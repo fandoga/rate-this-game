@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+
 import { prisma } from "@/lib/prisma";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 // GET /api/ratings — получить все оценки текущего пользователя
 export async function GET() {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -24,7 +26,7 @@ export async function GET() {
 
 // POST /api/ratings — добавить/обновить оценку
 export async function POST(req: NextRequest) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -49,11 +51,11 @@ export async function POST(req: NextRequest) {
     tech,
     gameplay,
     sub,
-    review,
   } = body;
 
   // Валидация
-  if (!gameId || !gameName || !summary || summary < 1 || summary > 10) {
+  // summary у нас считается в диапазоне 1–100, поэтому разрешаем до 100
+  if (!gameId || !gameName || !summary || summary < 1 || summary > 100) {
     return NextResponse.json({ error: "Invalid data" }, { status: 400 });
   }
 
@@ -72,7 +74,6 @@ export async function POST(req: NextRequest) {
       tech,
       sub,
       summary,
-      review,
       gameName,
       gameImage,
     },
@@ -87,7 +88,6 @@ export async function POST(req: NextRequest) {
       tech,
       sub,
       summary,
-      review,
     },
   });
 

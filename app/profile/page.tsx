@@ -1,17 +1,21 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
+import { useGameRatings } from "../shared/hooks/useGameRatings";
+
 import RatedGamesList from "@/components/RatedGamesList";
 import { RatedGameType } from "@/app/shared/types";
-import { loadRatedGame } from "@/app/shared/utils/localStorage";
-import { useEffect, useState } from "react";
-import { useGameRatings } from "../shared/hooks/useGameRatings";
 
 export default function Profile() {
   const { ratings, loading, removeRating, isAuthenticated } = useGameRatings();
   const [ratingList, setRatingList] = useState<RatedGameType[]>([]);
+
   useEffect(() => {
     setRatingList(ratings);
-  }, []);
+  }, [ratings]);
+
+  console.log(ratings);
 
   return (
     <div className="flex items-start gap-10 justify-center">

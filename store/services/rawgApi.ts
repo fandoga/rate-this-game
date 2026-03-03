@@ -1,9 +1,11 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type {
   BaseQueryFn,
   FetchArgs,
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
+
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
 import { RawgGame } from "@/app/shared/types";
 import { RawgPaginatedResponse } from "@/app/shared/types";
 
@@ -39,6 +41,7 @@ export const rawgApi = createApi({
 
       return rawBaseQuery(argsObj, api, extraOptions);
     };
+
     return baseQueryWithKey;
   })(),
   endpoints: (builder) => ({

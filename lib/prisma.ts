@@ -1,3 +1,4 @@
+// Prisma Client instance configured for PostgreSQL via @prisma/adapter-pg
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 

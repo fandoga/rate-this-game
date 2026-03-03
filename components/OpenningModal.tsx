@@ -1,6 +1,5 @@
 "use client";
 
-import { setFirstVisit } from "@/app/shared/utils/localStorage";
 import { Button } from "@heroui/button";
 import {
   Modal,
@@ -12,12 +11,15 @@ import {
 } from "@heroui/modal";
 import { useEffect } from "react";
 
+import { setFirstVisit } from "@/app/shared/utils/localStorage";
+
 const OpenningModal = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   useEffect(() => {
     const raw = localStorage.getItem("userData");
     const data = raw ? JSON.parse(raw) : [];
+
     if (!data.noFirstVisit) {
       onOpen();
       setFirstVisit();

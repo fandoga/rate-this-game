@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
 import { rawgApi } from "@/store/services/rawgApi";
 import { RawgGame } from "@/app/shared/types";
 

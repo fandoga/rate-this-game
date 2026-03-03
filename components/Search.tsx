@@ -1,12 +1,5 @@
 "use client";
 
-import { rateSlice } from "@/store/reducers/rateSlice";
-import {
-  useLazyGetGameByIdQuery,
-  useLazySearchGamesQuery,
-} from "@/store/services/rawgApi";
-import { RawgGame } from "@/app/shared/types";
-import { useAppDispatch, useAppSelector } from "@/app/shared/utils/hooksRedux";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import debounce from "debounce";
 import {
@@ -18,6 +11,14 @@ import {
 } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+
+import { useAppDispatch, useAppSelector } from "@/app/shared/utils/hooksRedux";
+import { RawgGame } from "@/app/shared/types";
+import {
+  useLazyGetGameByIdQuery,
+  useLazySearchGamesQuery,
+} from "@/store/services/rawgApi";
+import { rateSlice } from "@/store/reducers/rateSlice";
 
 type AutocompleteRef = ComponentPropsWithRef<typeof Autocomplete>["ref"];
 const Search = () => {
@@ -40,6 +41,7 @@ const Search = () => {
 
   const gamesList = useMemo(() => {
     const results = data?.results ?? [];
+
     return [...results].sort(
       (a, b) => (b.ratings_count ?? 0) - (a.ratings_count ?? 0),
     );
@@ -49,6 +51,7 @@ const Search = () => {
 
   const handleSearch = debounce((value: string) => {
     const q = value.trim();
+
     dispatch(setLastSearchQuery(q));
     if (q.length > 0) {
       trigger({ query: q, page: 1, page_size: 20 });
@@ -66,37 +69,38 @@ const Search = () => {
   return (
     <Autocomplete
       ref={inputRef as AutocompleteRef}
-      items={results}
-      onInputChange={handleSearch}
-      onSelectionChange={(val) => {
-        const selected = gamesList.find((g) => String(g.id) === String(val));
-        if (selected) getGame(selected);
-        if (pathname !== "/") router.push("/");
-      }}
-      aria-label="Поиск игры"
-      placeholder="Найти свою игру"
       isClearable
-      className="transition-all max-w-md outline-none hover:shadow-lg rounded-xl shadow-indigo-500/50"
-      type="text"
       allowsEmptyCollection={true}
-      selectorIcon={""}
+      aria-label="Поиск игры"
+      className="transition-all max-w-md outline-none hover:shadow-lg rounded-xl shadow-indigo-500/50"
       isLoading={isFetching}
+      items={results}
+      listboxProps={{
+        emptyContent: q ? "Нечего показывать" : "Подождите...",
+      }}
       menuTrigger="input"
+      placeholder="Найти свою игру"
+      selectorIcon={""}
+      type="text"
       onClear={() => {
         dispatch(setLastSearchQuery(""));
         dispatch(setGame({ name: "" }));
       }}
-      listboxProps={{
-        emptyContent: q ? "Нечего показывать" : "Подождите...",
+      onInputChange={handleSearch}
+      onSelectionChange={(val) => {
+        const selected = gamesList.find((g) => String(g.id) === String(val));
+
+        if (selected) getGame(selected);
+        if (pathname !== "/") router.push("/");
       }}
     >
       {(game) => (
         <AutocompleteItem key={game.id} textValue={game.name}>
           <div className="flex gap-2 items-center">
             <img
-              src={game.background_image}
               alt={game.name}
               className="w-16 h-16 object-cover rounded"
+              src={game.background_image}
             />
             <div className="flex flex-col">
               <span className="text-small">{game.name}</span>

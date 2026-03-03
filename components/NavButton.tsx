@@ -3,25 +3,35 @@ import React from "react";
 
 interface NavButtonProps {
   href: string;
-  svg: string;
+  img?: string | undefined | null;
 }
 
-const NavButton: React.FC<NavButtonProps> = ({ href, svg }) => {
+const NavButton: React.FC<NavButtonProps> = ({ href, img }) => {
+
   return (
     <Link
-      className="flex items-center justify-center transition-all duration-300 bg-default-100 rounded-full w-10 h-10 hover:scale-110 hover:shadow-lg shadow-indigo-500/70"
+      className="flex items-center justify-center overflow-hidden transition-all duration-300 bg-default-100 rounded-full w-10 h-10 hover:scale-110 hover:shadow-lg shadow-indigo-500/70"
       href={href}
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="white"
-        className="size-6"
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" d={svg} />
-      </svg>
+      {img && img !== null ? (
+        <img src={img} alt="profile_img" className=""/>
+      ) : (
+          <svg
+          className="size-6"
+          fill="none"
+          stroke="white"
+          strokeWidth={1.5}
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        )
+      }
     </Link>
   );
 };

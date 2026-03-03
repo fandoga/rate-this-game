@@ -1,5 +1,4 @@
 import { Button } from "@heroui/button";
-import { RatedGameType } from "@/app/shared/types";
 import {
   Modal,
   ModalBody,
@@ -7,11 +6,14 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@heroui/modal";
-import { useAppDispatch, useAppSelector } from "@/app/shared/utils/hooksRedux";
-import { useLazyGetGameByIdQuery } from "@/store/services/rawgApi";
 import { useEffect } from "react";
 import { Skeleton } from "@heroui/skeleton";
+
 import RatingSpan from "./RatingSpan";
+
+import { useLazyGetGameByIdQuery } from "@/store/services/rawgApi";
+import { useAppDispatch } from "@/app/shared/utils/hooksRedux";
+import { RatedGameType } from "@/app/shared/types";
 import { rateSlice } from "@/store/reducers/rateSlice";
 
 interface RatedGameModalProps {
@@ -46,9 +48,9 @@ const RatedGameModal: React.FC<RatedGameModalProps> = ({
             <ModalBody>
               <div>
                 <img
+                  alt={game?.name}
                   className="mb-6 rounded-lg"
                   src={game?.background_image}
-                  alt={game?.name}
                 />
                 <p>{game?.description_raw.slice(0, 600) + "..."}</p>
               </div>

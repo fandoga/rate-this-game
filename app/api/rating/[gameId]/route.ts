@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+
 import { prisma } from "@/lib/prisma";
 
 // DELETE /api/ratings/some-game-id
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { gameId: string } },
+  { params }: { params: Promise<{ gameId: string }> },
 ) {
+  const { gameId } = await params;
+
   const session = await getServerSession();
 
   if (!session?.user?.email) {
@@ -25,7 +28,7 @@ export async function DELETE(
     where: {
       userId_gameId: {
         userId: user.id,
-        gameId: params.gameId,
+        gameId,
       },
     },
   });
@@ -36,8 +39,10 @@ export async function DELETE(
 // GET /api/ratings/some-game-id — оценка конкретной игры
 export async function GET(
   req: NextRequest,
-  { params }: { params: { gameId: string } },
+  { params }: { params: Promise<{ gameId: string }> },
 ) {
+  const { gameId } = await params;
+
   const session = await getServerSession();
 
   if (!session?.user?.email) {
@@ -54,7 +59,7 @@ export async function GET(
     where: {
       userId_gameId: {
         userId: user.id,
-        gameId: params.gameId,
+        gameId,
       },
     },
   });

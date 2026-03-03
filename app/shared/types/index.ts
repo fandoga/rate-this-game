@@ -29,13 +29,23 @@ export interface RatedGameType {
   gameId: string;
   gameName: string;
   gameImage?: string;
-  rating: Game;
+  rating: GameType;
   review?: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface Game {
+export interface GameType {
+  story: number;
+  visual: number;
+  gameplay: number;
+  tech: number;
+  sub: number;
+  summary: number;
+}
+
+export interface RatedGameDBType extends RatedGameType {
+  userId: string;
   story: number;
   visual: number;
   gameplay: number;

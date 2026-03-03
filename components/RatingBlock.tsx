@@ -2,16 +2,15 @@
 
 import { Slider } from "@heroui/slider";
 import { Button } from "@heroui/react";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+
 import { useAppDispatch, useAppSelector } from "@/app/shared/utils/hooksRedux";
 import { rateSlice } from "@/store/reducers/rateSlice";
-import { saveRatedGame } from "@/app/shared/utils/localStorage";
 import { SliderConfig } from "@/app/shared/types";
 import { useGameRatings } from "@/app/shared/hooks/useGameRatings";
 
 const RatingBlock = () => {
-  const { getRating, rateGame, removeRating, isAuthenticated } =
-    useGameRatings();
+  const { rateGame, removeRating, isAuthenticated } = useGameRatings();
   const dispatch = useAppDispatch();
   const { setScore } = rateSlice.actions;
   const { game } = useAppSelector((state) => state.rateSlice);
@@ -48,34 +47,34 @@ const RatingBlock = () => {
 
     onPress();
     dispatch(setScore(resultValue));
-    saveRatedGame({
-      id: game.id,
-      name: game.name,
-      bg_img: game.background_image || "",
-      rating: {
-        story: Story,
-        visual: Visual,
-        gameplay: Gameplay,
-        tech: Tech,
-        sub: Sub,
-        summary: resultValue,
-      },
-    });
+    // saveRatedGame({
+    //   id: game.id,
+    //   name: game.name,
+    //   bg_img: game.background_image || "",
+    //   rating: {
+    //     story: Story,
+    //     visual: Visual,
+    //     gameplay: Gameplay,
+    //     tech: Tech,
+    //     sub: Sub,
+    //     summary: resultValue,
+    //   },
+    // });
   };
 
   const check = (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
       className="size-6"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
     >
       <path
+        d="m4.5 12.75 6 6 9-13.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="m4.5 12.75 6 6 9-13.5"
       />
     </svg>
   );
@@ -139,19 +138,20 @@ const RatingBlock = () => {
           return (
             <Slider
               key={key}
-              onChange={(val) => {
-                const nextValue = Array.isArray(val) ? (val[0] ?? value) : val;
-                setter(nextValue);
-              }}
               className={className ?? "w-full"}
-              defaultValue={4}
-              value={value}
-              label={label}
-              isDisabled={!isGameSelected}
               color={sliderColor}
+              defaultValue={4}
+              isDisabled={!isGameSelected}
+              label={label}
               maxValue={10}
               minValue={1}
               step={1}
+              value={value}
+              onChange={(val) => {
+                const nextValue = Array.isArray(val) ? (val[0] ?? value) : val;
+
+                setter(nextValue);
+              }}
             />
           );
         })}
@@ -161,10 +161,10 @@ const RatingBlock = () => {
           {isGameSelected ? resultValue : "..."}
         </h1>
         <Button
-          size="lg"
-          color={"secondary"}
           className={`transform-all shadow-pink-400/50 ${isPressed ? "shadow-lg" : ""}`}
+          color={"secondary"}
           isDisabled={!isGameSelected || isPressed}
+          size="lg"
           startContent={isPressed ? check : ""}
           onClick={() => handleRate()}
         >

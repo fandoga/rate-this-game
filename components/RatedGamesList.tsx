@@ -1,8 +1,10 @@
 "use client";
 
-import { RatedGameType, RawgGame } from "@/app/shared/types";
-import React, { useEffect, useState } from "react";
+import React from "react";
+
 import RatedGame from "./RatedGame";
+
+import { RatedGameType } from "@/app/shared/types";
 
 interface RatedGamesProps {
   ratingList: RatedGameType[];

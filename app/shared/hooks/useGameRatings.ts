@@ -3,35 +3,18 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 
-export interface GameRating {
-  id: string;
-  gameId: string;
-  gameName: string;
-  gameImage?: string;
-  rating: Game;
-  review?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Game {
-  story: number;
-  visual: number;
-  gameplay: number;
-  tech: number;
-  sub: number;
-  summary: number;
-}
+import { GameType, RatedGameType } from "../types";
 
 // ========== Фолбэк на localStorage для незалогиненных ==========
 
-function getLocalRatings(): GameRating[] {
+function getLocalRatings(): RatedGameType[] {
   if (typeof window === "undefined") return [];
   const data = localStorage.getItem("gameRatings");
+
   return data ? JSON.parse(data) : [];
 }
 
-function setLocalRatings(ratings: GameRating[]) {
+function setLocalRatings(ratings: RatedGameType[]) {
   localStorage.setItem("gameRatings", JSON.stringify(ratings));
 }
 
@@ -39,7 +22,7 @@ function setLocalRatings(ratings: GameRating[]) {
 
 export function useGameRatings() {
   const { data: session, status } = useSession();
-  const [ratings, setRatings] = useState<GameRating[]>([]);
+  const [ratings, setRatings] = useState<RatedGameType[]>([]);
   const [loading, setLoading] = useState(true);
   const isAuthenticated = status === "authenticated";
 
@@ -49,8 +32,9 @@ export function useGameRatings() {
 
     if (isAuthenticated) {
       // Загружаем из БД через API
-      const res = await fetch("/api/ratings");
+      const res = await fetch("/api/rating");
       const data = await res.json();
+
       setRatings(Array.isArray(data) ? data : []);
     } else {
       // Фолбэк на localStorage
@@ -72,25 +56,30 @@ export function useGameRatings() {
       gameId: string;
       gameName: string;
       gameImage?: string;
-      rating: Game;
-      review?: string;
+      rating: GameType;
     }) => {
       if (isAuthenticated) {
-        const res = await fetch("/api/ratings", {
+        const { rating, ...rest } = game;
+
+        const res = await fetch("/api/rating", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(game),
+          body: JSON.stringify({
+            ...rest,
+            ...rating,
+          }),
         });
         const saved = await res.json();
 
         setRatings((prev) => {
           const safePrev = Array.isArray(prev) ? prev : [];
           const filtered = safePrev.filter((r) => r.gameId !== game.gameId);
+
           return [saved, ...filtered];
         });
       } else {
         // localStorage
-        const newRating: GameRating = {
+        const newRating: RatedGameType = {
           id: crypto.randomUUID(),
           ...game,
           createdAt: new Date().toISOString(),
@@ -100,7 +89,9 @@ export function useGameRatings() {
         setRatings((prev) => {
           const filtered = prev.filter((r) => r.gameId !== game.gameId);
           const updated = [newRating, ...filtered];
+
           setLocalRatings(updated);
+
           return updated;
         });
       }
@@ -117,7 +108,9 @@ export function useGameRatings() {
 
       setRatings((prev) => {
         const updated = prev.filter((r) => r.gameId !== gameId);
+
         if (!isAuthenticated) setLocalRatings(updated);
+
         return updated;
       });
     },
@@ -139,5 +132,6 @@ export function useGameRatings() {
     removeRating,
     getRating,
     isAuthenticated,
+    session,
   };
 }
