@@ -1,5 +1,5 @@
 import { Button } from "@heroui/button";
-import { RatedGameType } from "@/types";
+import { RatedGameType } from "@/app/shared/types";
 import {
   Modal,
   ModalBody,
@@ -7,7 +7,7 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@heroui/modal";
-import { useAppDispatch, useAppSelector } from "@/utils/hooksRedux";
+import { useAppDispatch, useAppSelector } from "@/app/shared/utils/hooksRedux";
 import { useLazyGetGameByIdQuery } from "@/store/services/rawgApi";
 import { useEffect } from "react";
 import { Skeleton } from "@heroui/skeleton";
@@ -30,7 +30,7 @@ const RatedGameModal: React.FC<RatedGameModalProps> = ({
   const [fetchGameById, { data, isFetching }] = useLazyGetGameByIdQuery();
 
   useEffect(() => {
-    fetchGameById(sel_game.id);
+    fetchGameById(parseInt(sel_game.id));
   }, [sel_game]);
 
   const game = data;

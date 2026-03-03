@@ -5,8 +5,8 @@ import {
   useLazyGetGameByIdQuery,
   useLazySearchGamesQuery,
 } from "@/store/services/rawgApi";
-import { RawgGame } from "@/types";
-import { useAppDispatch, useAppSelector } from "@/utils/hooksRedux";
+import { RawgGame } from "@/app/shared/types";
+import { useAppDispatch, useAppSelector } from "@/app/shared/utils/hooksRedux";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import debounce from "debounce";
 import {
@@ -41,7 +41,7 @@ const Search = () => {
   const gamesList = useMemo(() => {
     const results = data?.results ?? [];
     return [...results].sort(
-      (a, b) => (b.ratings_count ?? 0) - (a.ratings_count ?? 0)
+      (a, b) => (b.ratings_count ?? 0) - (a.ratings_count ?? 0),
     );
   }, [data]);
 

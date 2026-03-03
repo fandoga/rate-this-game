@@ -1,4 +1,4 @@
-import { RatedGameType } from "@/types";
+import { RatedGameType } from "@/app/shared/types";
 
 const KEY = "ratedGames";
 const USER = "userData";

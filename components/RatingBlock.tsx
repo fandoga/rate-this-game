@@ -3,12 +3,15 @@
 import { Slider } from "@heroui/slider";
 import { Button } from "@heroui/react";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/utils/hooksRedux";
+import { useAppDispatch, useAppSelector } from "@/app/shared/utils/hooksRedux";
 import { rateSlice } from "@/store/reducers/rateSlice";
-import { saveRatedGame } from "@/utils/localStorage";
-import { SliderConfig } from "@/types";
+import { saveRatedGame } from "@/app/shared/utils/localStorage";
+import { SliderConfig } from "@/app/shared/types";
+import { useGameRatings } from "@/app/shared/hooks/useGameRatings";
 
 const RatingBlock = () => {
+  const { getRating, rateGame, removeRating, isAuthenticated } =
+    useGameRatings();
   const dispatch = useAppDispatch();
   const { setScore } = rateSlice.actions;
   const { game } = useAppSelector((state) => state.rateSlice);
@@ -20,6 +23,45 @@ const RatingBlock = () => {
   const [Sub, setSub] = useState<number>(4);
 
   const [isPressed, setPress] = useState(false);
+
+  const handleRate = async () => {
+    // Можно оставить возможность оценивать без входа (localStorage)
+    // Или заставить войти:
+    // if (!isAuthenticated) {
+    //   signIn('google')
+    //   return
+    // }
+
+    await rateGame({
+      gameId: String(game.id),
+      gameName: game.name,
+      gameImage: game.background_image || "",
+      rating: {
+        story: Story,
+        visual: Visual,
+        gameplay: Gameplay,
+        tech: Tech,
+        sub: Sub,
+        summary: resultValue,
+      },
+    });
+
+    onPress();
+    dispatch(setScore(resultValue));
+    saveRatedGame({
+      id: game.id,
+      name: game.name,
+      bg_img: game.background_image || "",
+      rating: {
+        story: Story,
+        visual: Visual,
+        gameplay: Gameplay,
+        tech: Tech,
+        sub: Sub,
+        summary: resultValue,
+      },
+    });
+  };
 
   const check = (
     <svg
@@ -124,23 +166,7 @@ const RatingBlock = () => {
           className={`transform-all shadow-pink-400/50 ${isPressed ? "shadow-lg" : ""}`}
           isDisabled={!isGameSelected || isPressed}
           startContent={isPressed ? check : ""}
-          onClick={() => {
-            onPress();
-            dispatch(setScore(resultValue));
-            saveRatedGame({
-              id: game.id,
-              name: game.name,
-              bg_img: game.background_image || "",
-              rating: {
-                story: Story,
-                visual: Visual,
-                gameplay: Gameplay,
-                tech: Tech,
-                sub: Sub,
-                summary: resultValue,
-              },
-            });
-          }}
+          onClick={() => handleRate()}
         >
           {isPressed ? "Оценка принята" : "Подтвердить"}
         </Button>

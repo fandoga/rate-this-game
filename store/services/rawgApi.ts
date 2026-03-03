@@ -4,8 +4,8 @@ import type {
   FetchArgs,
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
-import { RawgGame } from "@/types";
-import { RawgPaginatedResponse } from "@/types";
+import { RawgGame } from "@/app/shared/types";
+import { RawgPaginatedResponse } from "@/app/shared/types";
 
 const RAWG_BASE_URL = "https://api.rawg.io/api";
 const RAWG_API_KEY = process.env.NEXT_PUBLIC_RAWG_API_KEY as string | undefined;
@@ -15,7 +15,7 @@ if (!RAWG_API_KEY) {
   // Requests will return 401 without a valid API key
   // eslint-disable-next-line no-console
   console.warn(
-    "[rawgApi] NEXT_PUBLIC_RAWG_API_KEY is not set. RAWG requests will be unauthorized (401)."
+    "[rawgApi] NEXT_PUBLIC_RAWG_API_KEY is not set. RAWG requests will be unauthorized (401).",
   );
 }
 

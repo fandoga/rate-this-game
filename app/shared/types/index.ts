@@ -25,17 +25,23 @@ export interface RawgGame {
 }
 
 export interface RatedGameType {
-  id: number;
-  name: string;
-  bg_img: string;
-  rating: {
-    story: number;
-    visual: number;
-    gameplay: number;
-    tech: number;
-    sub: number;
-    summary: number;
-  };
+  id: string;
+  gameId: string;
+  gameName: string;
+  gameImage?: string;
+  rating: Game;
+  review?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Game {
+  story: number;
+  visual: number;
+  gameplay: number;
+  tech: number;
+  sub: number;
+  summary: number;
 }
 
 export interface RawgPaginatedResponse<T> {

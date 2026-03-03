@@ -1,6 +1,6 @@
 "use client";
 
-import { RatedGameType, RawgGame } from "@/types";
+import { RatedGameType, RawgGame } from "@/app/shared/types";
 import React, { useEffect, useState } from "react";
 import RatedGame from "./RatedGame";
 

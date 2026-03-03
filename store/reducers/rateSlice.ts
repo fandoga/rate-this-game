@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { rawgApi } from "@/store/services/rawgApi";
-import { RawgGame } from "@/types";
+import { RawgGame } from "@/app/shared/types";
 
 interface RateState {
   game: RawgGame;
@@ -80,7 +80,7 @@ export const rateSlice = createSlice({
         (state, { payload }) => {
           state.game = payload;
           state.isLoading = false;
-        }
+        },
       )
       .addMatcher(rawgApi.endpoints.getGameById.matchRejected, (state) => {
         state.isLoading = false;

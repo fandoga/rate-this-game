@@ -9,6 +9,7 @@
     "lint": "eslint --fix"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.11.1",
     "@heroui/accordion": "2.2.24",
     "@heroui/alert": "2.2.27",
     "@heroui/autocomplete": "2.3.29",
@@ -51,6 +52,8 @@
     "@heroui/toast": "2.0.17",
     "@heroui/tooltip": "2.2.24",
     "@heroui/user": "2.2.22",
+    "@prisma/adapter-pg": "^7.4.2",
+    "@prisma/client": "^7.4.2",
     "@react-aria/ssr": "3.9.10",
     "@react-aria/visually-hidden": "3.8.28",
     "@reduxjs/toolkit": "^2.10.1",
@@ -59,12 +62,16 @@
     "framer-motion": "11.18.2",
     "intl-messageformat": "10.7.16",
     "next": "15.3.1",
+    "next-auth": "^4.24.13",
     "next-themes": "0.4.6",
+    "pg": "^8.19.0",
+    "prisma": "^7.4.2",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-redux": "^9.2.0"
   },
   "devDependencies": {
+    "@eslint/compat": "^2.0.2",
     "@next/eslint-plugin-next": "15.3.4",
     "@react-types/shared": "3.32.1",
     "@tailwindcss/postcss": "4.1.11",

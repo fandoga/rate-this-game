@@ -2,8 +2,14 @@
 
 import Search from "./Search";
 import NavButton from "./NavButton";
+import { useEffect, useState } from "react";
+import { button } from "@heroui/theme";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useGameRatings } from "@/app/shared/hooks/useGameRatings";
 
 const NavBar = () => {
+  const { isAuthenticated } = useGameRatings();
+
   const svgHome =
     "m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25";
   const svgProfile =
@@ -13,7 +19,13 @@ const NavBar = () => {
     <div className="flex justify-between w-full gap-2 mx-auto px-10 pb-4 pt-4 bg-gray items-center">
       <NavButton href="/" svg={svgHome} />
       <Search />
-      <NavButton href="/profile" svg={svgProfile} />
+      {isAuthenticated ? (
+        <NavButton href="/profile" svg={svgProfile} />
+      ) : (
+        <button className="cursor-pointer" onClick={() => signIn("google")}>
+          Sign in
+        </button>
+      )}
     </div>
   );
 };

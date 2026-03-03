@@ -1,5 +1,5 @@
 import { Tooltip } from "@heroui/tooltip";
-import { RatedGameType } from "@/types";
+import { RatedGameType } from "@/app/shared/types";
 
 const RatingSpan = ({ game }: { game: RatedGameType }) => {
   const isGOAT = game.rating.summary === 100;

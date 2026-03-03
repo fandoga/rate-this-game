@@ -1,4 +1,4 @@
-import { RatedGameType } from "@/types";
+import { RatedGameType } from "@/app/shared/types";
 import { useDisclosure } from "@heroui/modal";
 import React from "react";
 import RatedGameModal from "./RatedGameModal";
@@ -20,21 +20,22 @@ const RatedGame: React.FC<RatedGameProps> = ({ game }) => {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
       />
-      <div
+      <button
+        type="button"
         onClick={onOpen}
         className={`bg-linear-to-r from-gray ${isGOAT ? "to-yellow-700/12" : "to-blue-800/12"} p-5 rounded-lg w-full h-90 flex items-center justify-between cursor-pointer`}
-        key={game.id}
+        aria-label={`Open rated game: ${game.gameName}`}
       >
         <div className="game flex items-center flex-col">
           <img
             className="w-sm h-sm rounded-lg h-64 object-cover"
-            src={game.bg_img}
-            alt={game.name}
+            src={game.gameImage}
+            alt={game.gameName}
           />
-          <h2 className="text-4xl font-bold pt-5">{game.name}</h2>
+          <h2 className="text-4xl font-bold pt-5">{game.gameName}</h2>
         </div>
         <RatingSpan game={game} />
-      </div>
+      </button>
     </>
   );
 };

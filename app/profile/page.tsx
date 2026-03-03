@@ -1,14 +1,16 @@
 "use client";
 
 import RatedGamesList from "@/components/RatedGamesList";
-import { RatedGameType } from "@/types";
-import { loadRatedGame } from "@/utils/localStorage";
+import { RatedGameType } from "@/app/shared/types";
+import { loadRatedGame } from "@/app/shared/utils/localStorage";
 import { useEffect, useState } from "react";
+import { useGameRatings } from "../shared/hooks/useGameRatings";
 
 export default function Profile() {
+  const { ratings, loading, removeRating, isAuthenticated } = useGameRatings();
   const [ratingList, setRatingList] = useState<RatedGameType[]>([]);
   useEffect(() => {
-    setRatingList(loadRatedGame());
+    setRatingList(ratings);
   }, []);
 
   return (

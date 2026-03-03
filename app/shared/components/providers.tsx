@@ -5,9 +5,10 @@ import type { ThemeProviderProps } from "next-themes";
 import * as React from "react";
 import { HeroUIProvider } from "@heroui/system";
 import { useRouter } from "next/navigation";
-import { Provider } from "react-redux"
+import { Provider } from "react-redux";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { makeStore } from "@/store/store";
+import { SessionProvider } from "next-auth/react";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -25,12 +26,14 @@ declare module "@react-types/shared" {
 export function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
 
-  const store = makeStore()
+  const store = makeStore();
 
   return (
     <HeroUIProvider navigate={router.push}>
       <Provider store={store}>
+        <SessionProvider>
           <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
+        </SessionProvider>
       </Provider>
     </HeroUIProvider>
   );

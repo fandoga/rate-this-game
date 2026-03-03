@@ -1,8 +1,8 @@
 "use client";
 
 import { useLazyGetGameByIdQuery } from "@/store/services/rawgApi";
-import { RawgGame } from "@/types";
-import { useAppSelector } from "@/utils/hooksRedux";
+import { RawgGame } from "@/app/shared/types";
+import { useAppSelector } from "@/app/shared/utils/hooksRedux";
 import { Skeleton } from "@heroui/skeleton";
 
 const GameBlock = () => {
@@ -29,9 +29,11 @@ const GameBlock = () => {
           <h1 className="pt-3 pb-2 text-[44px] font-bold">{game.name}</h1>
           <p>{game.description_raw?.slice(0, 160) + "..."}</p>
           <div className="pt-6 flex gap-5">
-            {hasPc && <img className="w-6 h-6" src="pc.svg" />}
-            {hasPlayStation && <img className="w-6 h-6" src="ps5.svg" />}
-            {hasXbox && <img className="w-6 h-6" src="xbox.svg" />}
+            {hasPc && <img className="w-6 h-6" src="pc.svg" alt="PC" />}
+            {hasPlayStation && (
+              <img className="w-6 h-6" src="ps5.svg" alt="PlayStation" />
+            )}
+            {hasXbox && <img className="w-6 h-6" src="xbox.svg" alt="Xbox" />}
           </div>
         </div>
       </Skeleton>
