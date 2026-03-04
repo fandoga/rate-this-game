@@ -13,9 +13,6 @@ const RAWG_BASE_URL = "https://api.rawg.io/api";
 const RAWG_API_KEY = process.env.NEXT_PUBLIC_RAWG_API_KEY as string | undefined;
 
 if (!RAWG_API_KEY) {
-  // Warn once at startup so it's obvious during development
-  // Requests will return 401 without a valid API key
-  // eslint-disable-next-line no-console
   console.warn(
     "[rawgApi] NEXT_PUBLIC_RAWG_API_KEY is not set. RAWG requests will be unauthorized (401).",
   );

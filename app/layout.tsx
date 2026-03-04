@@ -6,7 +6,7 @@ import { Providers } from "./shared/components/providers";
 
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
-import NavBar from "@/components/NavBar";
+import AppShell from "./shared/components/AppShell";
 
 export const metadata: Metadata = {
   title: {
@@ -41,12 +41,7 @@ export default function RootLayout({
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <div className="relative flex flex-col h-screen">
-            <NavBar />
-            <main className="container mx-auto pt-26 px-6 flex-grow">
-              {children}
-            </main>
-          </div>
+          <AppShell>{children}</AppShell>
         </Providers>
       </body>
     </html>

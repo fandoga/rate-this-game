@@ -9,8 +9,6 @@ const GameBlock = () => {
   const { game } = useAppSelector((state) => state.rateSlice);
   const [, { isLoading }] = useLazyGetGameByIdQuery();
 
-  console.log(game);
-
   const slugs =
     game.platforms?.map((p: any) => p?.platform?.slug).filter(Boolean) ?? [];
   const hasPc = slugs.includes("pc");

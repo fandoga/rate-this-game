@@ -3,11 +3,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 
-import { GameType, RatedGameType } from "../types";
+import { GameType, RatedGameDBType, RatedGameType } from "../types";
 
 // ========== Фолбэк на localStorage для незалогиненных ==========
 
-function getLocalRatings(): RatedGameType[] {
+function getLocalRatings(): RatedGameDBType[] {
   if (typeof window === "undefined") return [];
   const data = localStorage.getItem("gameRatings");
 
@@ -22,7 +22,7 @@ function setLocalRatings(ratings: RatedGameType[]) {
 
 export function useGameRatings() {
   const { data: session, status } = useSession();
-  const [ratings, setRatings] = useState<RatedGameType[]>([]);
+  const [ratings, setRatings] = useState<RatedGameDBType[]>([]);
   const [loading, setLoading] = useState(true);
   const isAuthenticated = status === "authenticated";
 
@@ -37,8 +37,7 @@ export function useGameRatings() {
 
       setRatings(Array.isArray(data) ? data : []);
     } else {
-      // Фолбэк на localStorage
-      setRatings(getLocalRatings());
+      setRatings([]);
     }
 
     setLoading(false);
@@ -58,9 +57,9 @@ export function useGameRatings() {
       gameImage?: string;
       rating: GameType;
     }) => {
-      if (isAuthenticated) {
-        const { rating, ...rest } = game;
+      const { rating, ...rest } = game;
 
+      if (isAuthenticated) {
         const res = await fetch("/api/rating", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -78,22 +77,9 @@ export function useGameRatings() {
           return [saved, ...filtered];
         });
       } else {
-        // localStorage
-        const newRating: RatedGameType = {
-          id: crypto.randomUUID(),
-          ...game,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        };
-
-        setRatings((prev) => {
-          const filtered = prev.filter((r) => r.gameId !== game.gameId);
-          const updated = [newRating, ...filtered];
-
-          setLocalRatings(updated);
-
-          return updated;
-        });
+        if (typeof window !== "undefined") {
+          window.alert("Чтобы оценивать игры, войдите в аккаунт.");
+        }
       }
     },
     [isAuthenticated],

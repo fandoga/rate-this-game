@@ -12,12 +12,10 @@ import { Skeleton } from "@heroui/skeleton";
 import RatingSpan from "./RatingSpan";
 
 import { useLazyGetGameByIdQuery } from "@/store/services/rawgApi";
-import { useAppDispatch } from "@/app/shared/utils/hooksRedux";
-import { RatedGameType } from "@/app/shared/types";
-import { rateSlice } from "@/store/reducers/rateSlice";
+import { RatedGameDBType } from "@/app/shared/types";
 
 interface RatedGameModalProps {
-  sel_game: RatedGameType;
+  sel_game: RatedGameDBType;
   isOpen: boolean;
   onOpenChange: any;
 }
@@ -27,13 +25,18 @@ const RatedGameModal: React.FC<RatedGameModalProps> = ({
   isOpen,
   onOpenChange,
 }) => {
-  const dispatch = useAppDispatch();
-  const { setGame } = rateSlice.actions;
   const [fetchGameById, { data, isFetching }] = useLazyGetGameByIdQuery();
 
   useEffect(() => {
-    fetchGameById(parseInt(sel_game.id));
-  }, [sel_game]);
+    if (isOpen) {
+      const rawgGameId = Number(sel_game.gameId);
+
+      if (!Number.isFinite(rawgGameId)) return;
+
+      fetchGameById(rawgGameId);
+    }
+    return;
+  }, [sel_game.gameId, fetchGameById, isOpen]);
 
   const game = data;
 

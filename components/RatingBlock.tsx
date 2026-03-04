@@ -8,9 +8,10 @@ import { useAppDispatch, useAppSelector } from "@/app/shared/utils/hooksRedux";
 import { rateSlice } from "@/store/reducers/rateSlice";
 import { SliderConfig } from "@/app/shared/types";
 import { useGameRatings } from "@/app/shared/hooks/useGameRatings";
+import { signIn } from "next-auth/react";
 
 const RatingBlock = () => {
-  const { rateGame, removeRating, isAuthenticated } = useGameRatings();
+  const { rateGame, isAuthenticated } = useGameRatings();
   const dispatch = useAppDispatch();
   const { setScore } = rateSlice.actions;
   const { game } = useAppSelector((state) => state.rateSlice);
@@ -47,19 +48,6 @@ const RatingBlock = () => {
 
     onPress();
     dispatch(setScore(resultValue));
-    // saveRatedGame({
-    //   id: game.id,
-    //   name: game.name,
-    //   bg_img: game.background_image || "",
-    //   rating: {
-    //     story: Story,
-    //     visual: Visual,
-    //     gameplay: Gameplay,
-    //     tech: Tech,
-    //     sub: Sub,
-    //     summary: resultValue,
-    //   },
-    // });
   };
 
   const check = (
@@ -114,7 +102,7 @@ const RatingBlock = () => {
     },
   ];
 
-  const isGameSelected = game.id > 0 ? true : false;
+  const isGameSelected = game.id > 0;
 
   const onPress = () => {
     setPress(true);
@@ -166,9 +154,19 @@ const RatingBlock = () => {
           isDisabled={!isGameSelected || isPressed}
           size="lg"
           startContent={isPressed ? check : ""}
-          onClick={() => handleRate()}
+          onClick={() => {
+            if (isAuthenticated) {
+              handleRate();
+            } else {
+              signIn("google");
+            }
+          }}
         >
-          {isPressed ? "Оценка принята" : "Подтвердить"}
+          {isAuthenticated
+            ? isPressed
+              ? "Оценка принята"
+              : "Подтвердить"
+            : "Сначала войти"}
         </Button>
       </div>
     </div>

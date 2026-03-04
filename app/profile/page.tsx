@@ -1,21 +1,41 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import { useGameRatings } from "../shared/hooks/useGameRatings";
-
 import RatedGamesList from "@/components/RatedGamesList";
-import { RatedGameType } from "@/app/shared/types";
+import { RatedGameDBType } from "@/app/shared/types";
+import { signIn } from "next-auth/react";
+import { Spinner } from "@heroui/spinner";
 
 export default function Profile() {
-  const { ratings, loading, removeRating, isAuthenticated } = useGameRatings();
-  const [ratingList, setRatingList] = useState<RatedGameType[]>([]);
+  const { ratings, loading, isAuthenticated } = useGameRatings();
+  const [ratingList, setRatingList] = useState<RatedGameDBType[]>([]);
 
   useEffect(() => {
     setRatingList(ratings);
   }, [ratings]);
 
-  console.log(ratings);
+  if (loading)
+    return (
+      <div className="w-full flex items-center justify-center">
+        <Spinner size="lg" />
+      </div>
+    );
+
+  if (!isAuthenticated)
+    return (
+      <div className="text-center text-6xl">
+        <h1 className="text-4xl font-bold pb-12">
+          {"Для начала авторизуйтесь =>"}
+        </h1>
+        <button
+          className="text-6xl font-bold text-cyan-400 cursor-pointer hover:scale-105"
+          onClick={() => signIn("google")}
+        >
+          войти
+        </button>
+      </div>
+    );
 
   return (
     <div className="flex items-start gap-10 justify-center">

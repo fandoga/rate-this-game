@@ -4,7 +4,7 @@ import React from "react";
 import RatedGameModal from "./RatedGameModal";
 import RatingSpan from "./RatingSpan";
 
-import { GameType, RatedGameDBType, RatedGameType, } from "@/app/shared/types";
+import { RatedGameDBType } from "@/app/shared/types";
 
 type RatedGameProps = {
   game: RatedGameDBType;
@@ -34,7 +34,7 @@ const RatedGame: React.FC<RatedGameProps> = ({ game }) => {
             className="w-sm h-sm rounded-lg h-64 object-cover"
             src={game.gameImage}
           />
-          <h2 className="text-4xl font-bold pt-5">{game.gameName}</h2>
+          <h2 className="text-3xl font-bold pt-5">{game.gameName}</h2>
         </div>
         <RatingSpan game={game} />
       </button>
