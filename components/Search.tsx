@@ -40,14 +40,14 @@ const Search = () => {
 
   const results = q ? gamesList : [];
 
-  const handleSearch = debounce((value: string) => {
-    const qValue = value.trim();
+  const handleSearch = (value: string) => {
+    const qValue = value;
 
     dispatch(setLastSearchQuery(qValue));
     if (qValue.length > 0) {
       trigger({ query: qValue, page: 1, page_size: 20 });
     }
-  }, 300);
+  };
 
   const getGame = (sel: RawgGame) => {
     setCurrentGame(sel);
