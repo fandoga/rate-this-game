@@ -1,16 +1,8 @@
 "use client";
 
-import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import debounce from "debounce";
-import {
-  ComponentPropsWithRef,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 import { useAppDispatch, useAppSelector } from "@/app/shared/utils/hooksRedux";
 import { RawgGame } from "@/app/shared/types";
@@ -20,7 +12,6 @@ import {
 } from "@/store/services/rawgApi";
 import { rateSlice } from "@/store/reducers/rateSlice";
 
-type AutocompleteRef = ComponentPropsWithRef<typeof Autocomplete>["ref"];
 const Search = () => {
   const { setGame, setLastSearchQuery } = rateSlice.actions;
   const dispatch = useAppDispatch();
@@ -50,11 +41,11 @@ const Search = () => {
   const results = q ? gamesList : [];
 
   const handleSearch = debounce((value: string) => {
-    const q = value.trim();
+    const qValue = value.trim();
 
-    dispatch(setLastSearchQuery(q));
-    if (q.length > 0) {
-      trigger({ query: q, page: 1, page_size: 20 });
+    dispatch(setLastSearchQuery(qValue));
+    if (qValue.length > 0) {
+      trigger({ query: qValue, page: 1, page_size: 20 });
     }
   }, 300);
 
@@ -67,48 +58,53 @@ const Search = () => {
   };
 
   return (
-    <Autocomplete
-      ref={inputRef as AutocompleteRef}
-      isClearable
-      allowsEmptyCollection={true}
-      aria-label="Поиск игры"
-      className="transition-all max-w-md outline-none hover:shadow-lg rounded-xl shadow-indigo-500/50"
-      isLoading={isFetching}
-      items={results}
-      listboxProps={{
-        emptyContent: q ? "Нечего показывать" : "Подождите...",
-      }}
-      menuTrigger="input"
-      placeholder="Найти свою игру"
-      selectorIcon={""}
-      type="text"
-      onClear={() => {
-        dispatch(setLastSearchQuery(""));
-        dispatch(setGame({ name: "" }));
-      }}
-      onInputChange={handleSearch}
-      onSelectionChange={(val) => {
-        const selected = gamesList.find((g) => String(g.id) === String(val));
+    <div className="relative max-w-md w-full">
+      <input
+        ref={inputRef}
+        aria-label="Поиск игры"
+        className="transition-all w-full rounded-xl border border-default-200 bg-background px-4 py-2 outline-none hover:shadow-lg shadow-indigo-500/50"
+        placeholder="Найти свою игру"
+        type="text"
+        onChange={(e) => handleSearch(e.target.value)}
+        value={q}
+      />
 
-        if (selected) getGame(selected);
-        if (pathname !== "/") router.push("/");
-      }}
-    >
-      {(game) => (
-        <AutocompleteItem key={game.id} textValue={game.name}>
-          <div className="flex gap-2 items-center">
-            <img
-              alt={game.name}
-              className="w-16 h-16 object-cover rounded"
-              src={game.background_image}
-            />
-            <div className="flex flex-col">
-              <span className="text-small">{game.name}</span>
+      {q && (
+        <div className="absolute z-50 mt-2 max-h-96 w-full overflow-y-auto rounded-xl border border-default-200 bg-content1 shadow-lg">
+          {isFetching && (
+            <div className="px-4 py-3 text-sm text-default-500">
+              Подождите...
             </div>
-          </div>
-        </AutocompleteItem>
+          )}
+
+          {!isFetching && results.length === 0 && (
+            <div className="px-4 py-3 text-sm text-default-500">
+              Нечего показывать
+            </div>
+          )}
+
+          {!isFetching &&
+            results.map((game) => (
+              <button
+                key={game.id}
+                className="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-default-100"
+                type="button"
+                onClick={() => {
+                  getGame(game);
+                  if (pathname !== "/") router.push("/");
+                }}
+              >
+                <img
+                  alt={game.name}
+                  className="h-12 w-12 rounded object-cover"
+                  src={game.background_image}
+                />
+                <span className="text-sm">{game.name}</span>
+              </button>
+            ))}
+        </div>
       )}
-    </Autocomplete>
+    </div>
   );
 };
 
