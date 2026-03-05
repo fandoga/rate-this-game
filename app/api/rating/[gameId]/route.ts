@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 
 import { prisma } from "@/lib/prisma";
+import { authOptions } from "@/lib/authOptions";
 
 // DELETE /api/ratings/some-game-id
 export async function DELETE(
@@ -10,7 +11,7 @@ export async function DELETE(
 ) {
   const { gameId } = await params;
 
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

@@ -5,19 +5,6 @@ import { useSession } from "next-auth/react";
 
 import { GameType, RatedGameDBType, RatedGameType } from "../types";
 
-// ========== Фолбэк на localStorage для незалогиненных ==========
-
-function getLocalRatings(): RatedGameDBType[] {
-  if (typeof window === "undefined") return [];
-  const data = localStorage.getItem("gameRatings");
-
-  return data ? JSON.parse(data) : [];
-}
-
-function setLocalRatings(ratings: RatedGameType[]) {
-  localStorage.setItem("gameRatings", JSON.stringify(ratings));
-}
-
 // ========== Хук ==========
 
 export function useGameRatings() {
@@ -89,13 +76,14 @@ export function useGameRatings() {
   const removeRating = useCallback(
     async (gameId: string) => {
       if (isAuthenticated) {
-        await fetch(`/api/ratings/${gameId}`, { method: "DELETE" });
+        await fetch(`/api/rating/${gameId}`, { method: "DELETE" });
       }
 
       setRatings((prev) => {
         const updated = prev.filter((r) => r.gameId !== gameId);
 
-        if (!isAuthenticated) setLocalRatings(updated);
+        if (!isAuthenticated) {
+        }
 
         return updated;
       });

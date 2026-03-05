@@ -18,9 +18,12 @@ const Search = () => {
   const [trigger, { data, isFetching }] = useLazySearchGamesQuery();
   const [fetchGameById] = useLazyGetGameByIdQuery();
   const q = useAppSelector((s) => s.rateSlice.lastSearchQuery);
+  const [inputValue, setInputValue] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
   const [currentGame, setCurrentGame] = useState<RawgGame>();
   const pathname = usePathname();
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const router = useRouter();
 
@@ -29,6 +32,27 @@ const Search = () => {
       inputRef.current?.focus();
     }
   }, [pathname]);
+
+  useEffect(() => {
+    const onPointerDown = (e: PointerEvent) => {
+      const el = containerRef.current;
+      if (!el) return;
+
+      if (!el.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", onPointerDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    setInputValue(q);
+  }, [q]);
 
   const gamesList = useMemo(() => {
     const results = data?.results ?? [];
@@ -40,13 +64,28 @@ const Search = () => {
 
   const results = q ? gamesList : [];
 
-  const handleSearch = (value: string) => {
-    const qValue = value;
+  const debouncedSearch = useMemo(() => {
+    return debounce((qValue: string) => {
+      dispatch(setLastSearchQuery(qValue));
 
-    dispatch(setLastSearchQuery(qValue));
-    if (qValue.length > 0) {
-      trigger({ query: qValue, page: 1, page_size: 20 });
-    }
+      if (qValue.length > 0) {
+        trigger({ query: qValue, page: 1, page_size: 20 });
+      }
+    }, 300);
+  }, [dispatch, trigger, setLastSearchQuery]);
+
+  useEffect(() => {
+    return () => {
+      debouncedSearch.clear();
+    };
+  }, [debouncedSearch]);
+
+  const handleSearch = (value: string) => {
+    const next = value;
+
+    setInputValue(next);
+    setIsOpen(true);
+    debouncedSearch(next.trim());
   };
 
   const getGame = (sel: RawgGame) => {
@@ -58,7 +97,7 @@ const Search = () => {
   };
 
   return (
-    <div className="relative max-w-md w-full">
+    <div ref={containerRef} className="relative max-w-md w-full">
       <input
         ref={inputRef}
         aria-label="Поиск игры"
@@ -66,10 +105,16 @@ const Search = () => {
         placeholder="Найти свою игру"
         type="text"
         onChange={(e) => handleSearch(e.target.value)}
-        value={q}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") {
+            setIsOpen(false);
+            (e.target as HTMLInputElement).blur();
+          }
+        }}
+        value={inputValue}
       />
 
-      {q && (
+      {isOpen && q && (
         <div className="absolute z-50 mt-2 max-h-96 w-full overflow-y-auto rounded-xl border border-default-200 bg-content1 shadow-lg">
           {isFetching && (
             <div className="px-4 py-3 text-sm text-default-500">
@@ -87,10 +132,12 @@ const Search = () => {
             results.map((game) => (
               <button
                 key={game.id}
-                className="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-default-100"
+                className="flex w-full cursor-pointer items-center gap-3 px-3 py-2 text-left hover:bg-default-100"
                 type="button"
                 onClick={() => {
                   getGame(game);
+                  setIsOpen(false);
+                  inputRef.current?.blur();
                   if (pathname !== "/") router.push("/");
                 }}
               >

@@ -8,12 +8,7 @@ import { signIn } from "next-auth/react";
 import { Spinner } from "@heroui/spinner";
 
 export default function Profile() {
-  const { ratings, loading, isAuthenticated } = useGameRatings();
-  const [ratingList, setRatingList] = useState<RatedGameDBType[]>([]);
-
-  useEffect(() => {
-    setRatingList(ratings);
-  }, [ratings]);
+  const { ratings, loading, isAuthenticated, removeRating } = useGameRatings();
 
   if (loading)
     return (
@@ -39,8 +34,8 @@ export default function Profile() {
 
   return (
     <div className="flex items-start gap-10 justify-center">
-      {ratingList.length > 0 ? (
-        <RatedGamesList ratingList={ratingList} />
+      {ratings.length > 0 ? (
+        <RatedGamesList onRemoveRating={removeRating} ratingList={ratings} />
       ) : (
         <div className="text-center text-6xl">
           <h1 className="text-4xl font-bold pb-12">

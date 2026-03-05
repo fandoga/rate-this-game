@@ -17,7 +17,7 @@ const GameBlock = () => {
 
   if (game.name.length > 0)
     return (
-      <Skeleton className="rounded-lg" isLoaded={!isLoading}>
+      <Skeleton className="rounded-lg h-full" isLoaded={!isLoading}>
         <div className="flex flex-col max-w-lg bg-gray p-7 rounded-lg self-stretch">
           <img
             alt={game.name}
