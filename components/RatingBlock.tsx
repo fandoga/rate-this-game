@@ -2,7 +2,7 @@
 
 import { Slider } from "@heroui/slider";
 import { Button } from "@heroui/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "@/app/shared/utils/hooksRedux";
 import { rateSlice } from "@/store/reducers/rateSlice";
@@ -23,6 +23,22 @@ const RatingBlock = () => {
   const [Sub, setSub] = useState<number>(4);
 
   const [isPressed, setPress] = useState(false);
+  const isGameSelected = game.id > 0;
+
+  const onGameChange = () => {
+    setPress(false);
+    setStory(4);
+    setVisual(4);
+    setGameplay(4);
+    setTech(4);
+    setSub(4);
+  };
+
+  useEffect(() => {
+    if (isGameSelected) {
+      onGameChange();
+    }
+  }, [game.id]);
 
   const handleRate = async () => {
     // Можно оставить возможность оценивать без входа (localStorage)
@@ -70,13 +86,13 @@ const RatingBlock = () => {
   const sliders: SliderConfig[] = [
     {
       key: "Story",
-      label: "Сюжет",
+      label: "Сюжет / Лор",
       setter: setStory,
       value: Story,
     },
     {
       key: "Visual",
-      label: "Визуал",
+      label: "Визуал / Графика",
       setter: setVisual,
       value: Visual,
     },
@@ -101,8 +117,6 @@ const RatingBlock = () => {
       value: Sub,
     },
   ];
-
-  const isGameSelected = game.id > 0;
 
   const onPress = () => {
     setPress(true);
