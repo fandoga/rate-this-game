@@ -1,3 +1,5 @@
+"use client";
+
 import { useDisclosure } from "@heroui/modal";
 import React from "react";
 
@@ -16,9 +18,14 @@ import {
 type RatedGameProps = {
   game: RatedGameDBType;
   onRemoveRating: (gameId: string) => void | Promise<void>;
+  mode: "medium" | "small" | "big";
 };
 
-const RatedGame: React.FC<RatedGameProps> = ({ game, onRemoveRating }) => {
+const RatedGame: React.FC<RatedGameProps> = ({
+  game,
+  onRemoveRating,
+  mode,
+}) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const isGOAT = game.summary === 100;
@@ -32,21 +39,23 @@ const RatedGame: React.FC<RatedGameProps> = ({ game, onRemoveRating }) => {
       />
       <button
         aria-label={`Open rated game: ${game.gameName}`}
-        className={`relative bg-linear-to-r from-gray ${isGOAT ? "to-yellow-700/12" : "to-blue-800/12"} p-5 rounded-lg w-full h-90 flex items-center justify-between cursor-pointer`}
+        className={`relative bg-linear-to-r from-gray ${isGOAT ? "to-yellow-700/12" : "to-blue-800/12"} p-5 rounded-lg w-full h-full flex ${mode === "small" && "flex-col aspect-[5/6]"} items-center justify-between cursor-pointer`}
         type="button"
         onClick={onOpen}
       >
         <div className="game flex items-center flex-col">
           <img
             alt={game.gameName}
-            className="w-sm h-sm rounded-lg h-64 object-cover"
+            className="max-h-50 w-sm rounded-lg h-64 object-cover"
             src={game.gameImage}
           />
           <h2 className="text-3xl font-bold pt-5">{game.gameName}</h2>
         </div>
         <RatingSpan game={game} />
         <Dropdown>
-          <DropdownTrigger className="cursor-pointer w-6 h-6 absolute top-5 right-5 opacity-30 transition-all hover:scale-105 hover:opacity-100">
+          <DropdownTrigger
+            className={`cursor-pointer w-6 h-6 absolute ${mode === "small" ? "bottom-2" : "top-5"} right-5 opacity-30 transition-all hover:scale-105 hover:opacity-100`}
+          >
             <Trash />
           </DropdownTrigger>
           <DropdownMenu aria-label="Static Actions">

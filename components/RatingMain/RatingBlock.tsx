@@ -9,9 +9,11 @@ import { rateSlice } from "@/store/reducers/rateSlice";
 import { SliderConfig } from "@/app/shared/types";
 import { useGameRatings } from "@/app/shared/hooks/useGameRatings";
 import { signIn } from "next-auth/react";
+import { check } from "@/app/shared/utils/icons";
+import { Spinner } from "@heroui/spinner";
 
 const RatingBlock = () => {
-  const { rateGame, isAuthenticated } = useGameRatings();
+  const { rateGame, getRating, loading, isAuthenticated } = useGameRatings();
   const dispatch = useAppDispatch();
   const { setScore } = rateSlice.actions;
   const { game } = useAppSelector((state) => state.rateSlice);
@@ -23,15 +25,21 @@ const RatingBlock = () => {
   const [Sub, setSub] = useState<number>(4);
 
   const [isPressed, setPress] = useState(false);
+  const [isRated, setRated] = useState(false);
   const isGameSelected = game.id > 0;
 
   const onGameChange = () => {
+    setRated(false);
     setPress(false);
     setStory(4);
     setVisual(4);
     setGameplay(4);
     setTech(4);
     setSub(4);
+
+    if (getRating(String(game.id)) !== null) {
+      setRated(true);
+    }
   };
 
   useEffect(() => {
@@ -41,13 +49,6 @@ const RatingBlock = () => {
   }, [game.id]);
 
   const handleRate = async () => {
-    // Можно оставить возможность оценивать без входа (localStorage)
-    // Или заставить войти:
-    // if (!isAuthenticated) {
-    //   signIn('google')
-    //   return
-    // }
-
     await rateGame({
       gameId: String(game.id),
       gameName: game.name,
@@ -66,23 +67,6 @@ const RatingBlock = () => {
     dispatch(setScore(resultValue));
   };
 
-  const check = (
-    <svg
-      className="size-6"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.5}
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="m4.5 12.75 6 6 9-13.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-
   const sliders: SliderConfig[] = [
     {
       key: "Story",
@@ -98,13 +82,13 @@ const RatingBlock = () => {
     },
     {
       key: "Gameplay",
-      label: "Геймплей",
+      label: "Геймплей / Аудио",
       setter: setGameplay,
       value: Gameplay,
     },
     {
       key: "Tech",
-      label: "Тех. часть",
+      label: "Тех. часть / Оптимизация",
       setter: setTech,
       value: Tech,
     },
@@ -167,7 +151,15 @@ const RatingBlock = () => {
           color={"secondary"}
           isDisabled={!isGameSelected || isPressed}
           size="lg"
-          startContent={isPressed ? check : ""}
+          startContent={
+            isPressed ? (
+              check
+            ) : loading ? (
+              <Spinner color="white" size="sm" />
+            ) : (
+              ""
+            )
+          }
           onClick={() => {
             if (isAuthenticated) {
               handleRate();
@@ -179,7 +171,9 @@ const RatingBlock = () => {
           {isAuthenticated
             ? isPressed
               ? "Оценка принята"
-              : "Подтвердить"
+              : isRated
+                ? "Переоценить"
+                : "Подтвердить"
             : "Войти"}
         </Button>
       </div>

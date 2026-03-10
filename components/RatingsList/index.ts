@@ -1,0 +1,5 @@
+export { default as OpenningModal } from './OpenningModal'
+export { default as RatedGame } from './RatedGame'
+export { default as RatedGameModal } from './RatedGameModal'
+export { default as RatedGamesList } from './RatedGamesList'
+export { default as RatingSpan } from './RatingSpan'

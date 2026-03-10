@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import NavBar from "@/components/NavBar";
+import { NavBar } from "@/components";
 import { Spinner } from "@heroui/spinner";
 import { useGameRatings } from "../hooks/useGameRatings";
 
@@ -15,9 +15,9 @@ const AppShell = ({ children }: AppShellProps) => {
   return (
     <div className="relative flex flex-col h-screen">
       <NavBar />
-      <main className="container mx-auto pt-26 px-6 flex-grow">
+      <main className="container mx-auto pt-8 pb-28 flex-grow">
         {loading ? (
-          <div className="w-full flex items-center justify-center">
+          <div className="w-full flex pt-[25%] items-center justify-center">
             <Spinner size="lg" />
           </div>
         ) : (

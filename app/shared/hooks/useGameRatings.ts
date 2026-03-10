@@ -5,8 +5,6 @@ import { useSession } from "next-auth/react";
 
 import { GameType, RatedGameDBType, RatedGameType } from "../types";
 
-// ========== Хук ==========
-
 export function useGameRatings() {
   const { data: session, status } = useSession();
   const [ratings, setRatings] = useState<RatedGameDBType[]>([]);
@@ -15,10 +13,8 @@ export function useGameRatings() {
 
   // Загрузка оценок
   const fetchRatings = useCallback(async () => {
-    setLoading(true);
-
     if (isAuthenticated) {
-      // Загружаем из БД через API
+      setLoading(true);
       const res = await fetch("/api/rating");
       const data = await res.json();
 
@@ -47,22 +43,29 @@ export function useGameRatings() {
       const { rating, ...rest } = game;
 
       if (isAuthenticated) {
-        const res = await fetch("/api/rating", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...rest,
-            ...rating,
-          }),
-        });
-        const saved = await res.json();
+        setLoading(true);
 
-        setRatings((prev) => {
-          const safePrev = Array.isArray(prev) ? prev : [];
-          const filtered = safePrev.filter((r) => r.gameId !== game.gameId);
+        try {
+          const res = await fetch("/api/rating", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...rest,
+              ...rating,
+            }),
+          });
 
-          return [saved, ...filtered];
-        });
+          const saved = await res.json();
+
+          setRatings((prev) => {
+            const safePrev = Array.isArray(prev) ? prev : [];
+            const filtered = safePrev.filter((r) => r.gameId !== game.gameId);
+
+            return [saved, ...filtered];
+          });
+        } finally {
+          setLoading(false);
+        }
       } else {
         if (typeof window !== "undefined") {
           window.alert("Чтобы оценивать игры, войдите в аккаунт.");

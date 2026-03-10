@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useGameRatings } from "../shared/hooks/useGameRatings";
-import RatedGamesList from "@/components/RatedGamesList";
-import { RatedGameDBType } from "@/app/shared/types";
+import { RatedGamesList } from "@/components";
 import { signIn } from "next-auth/react";
 import { Spinner } from "@heroui/spinner";
 
@@ -12,7 +10,7 @@ export default function Profile() {
 
   if (loading)
     return (
-      <div className="w-full flex items-center justify-center">
+      <div className="w-full pt-[25%] flex items-center justify-center">
         <Spinner size="lg" />
       </div>
     );
