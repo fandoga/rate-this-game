@@ -7,16 +7,15 @@ interface NavButtonProps {
 }
 
 const NavButton: React.FC<NavButtonProps> = ({ href, img }) => {
-
   return (
     <Link
-      className="flex items-center justify-center overflow-hidden transition-all duration-300 bg-default-100 rounded-full w-10 h-10 hover:scale-110 hover:shadow-lg shadow-indigo-500/70"
+      className="flex shrink-0 items-center justify-center overflow-hidden transition-all duration-300 bg-default-100 rounded-full w-10 h-10 hover:scale-110 hover:shadow-lg shadow-indigo-500/70"
       href={href}
     >
       {img && img !== null ? (
-        <img src={img} alt="profile_img" className=""/>
+        <img src={img} alt="profile_img" className="" />
       ) : (
-          <svg
+        <svg
           className="size-6"
           fill="none"
           stroke="white"
@@ -30,8 +29,7 @@ const NavButton: React.FC<NavButtonProps> = ({ href, img }) => {
             strokeLinejoin="round"
           />
         </svg>
-        )
-      }
+      )}
     </Link>
   );
 };

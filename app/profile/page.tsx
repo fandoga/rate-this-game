@@ -31,7 +31,7 @@ export default function Profile() {
     );
 
   return (
-    <div className="flex items-start gap-10 justify-center">
+    <div className="flex flex-col items-center gap-10 justify-center">
       {ratings.length > 0 ? (
         <RatedGamesList onRemoveRating={removeRating} ratingList={ratings} />
       ) : (

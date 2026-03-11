@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import {
   Dropdown,
   DropdownTrigger,
@@ -8,10 +8,11 @@ import {
   DropdownItem,
   Button,
 } from "@heroui/react";
+import { setScaleMode } from "@/app/shared/utils/localStorage";
 
 interface ScaleDropdownProps {
   mode: "medium" | "small" | "big";
-  setter: React.Dispatch<React.SetStateAction<"medium" | "small" | "big">>;
+  setter: Dispatch<SetStateAction<"medium" | "small" | "big">>;
 }
 
 const ScaleDropdown: React.FC<ScaleDropdownProps> = ({ mode, setter }) => {
@@ -24,7 +25,7 @@ const ScaleDropdown: React.FC<ScaleDropdownProps> = ({ mode, setter }) => {
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button className="bg-transparent w-[15%]">{labelMap[mode]}</Button>
+        <Button className="bg-transparent w-40">{labelMap[mode]}</Button>
       </DropdownTrigger>
       <DropdownMenu
         disallowEmptySelection
@@ -33,6 +34,7 @@ const ScaleDropdown: React.FC<ScaleDropdownProps> = ({ mode, setter }) => {
         onSelectionChange={(keys) => {
           const key = Array.from(keys)[0] as "medium" | "small" | "big";
           setter(key);
+          setScaleMode(key);
         }}
       >
         <DropdownItem key="big">Крупные значки</DropdownItem>

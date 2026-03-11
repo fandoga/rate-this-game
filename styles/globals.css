@@ -12,4 +12,9 @@
   font-size: var(--heroui-font-size-large);
 }
 
+.container {
+  padding-left: 13px;
+  padding-right: 13px;
+}
+
 @config "../tailwind.config.js";

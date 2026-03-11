@@ -2,6 +2,7 @@
 
 import { useDisclosure } from "@heroui/modal";
 import React from "react";
+import clsx from "clsx";
 
 import RatedGameModal from "./RatedGameModal";
 import RatingSpan from "./RatingSpan";
@@ -39,14 +40,26 @@ const RatedGame: React.FC<RatedGameProps> = ({
       />
       <button
         aria-label={`Open rated game: ${game.gameName}`}
-        className={`relative bg-linear-to-r from-gray ${isGOAT ? "to-yellow-700/12" : "to-blue-800/12"} p-5 rounded-lg w-full h-full flex ${mode === "small" && "flex-col aspect-[5/6]"} items-center justify-between cursor-pointer`}
+        className={clsx(
+          "relative cursor-pointer rounded-lg bg-linear-to-r from-gray p-5 w-full h-full flex items-center justify-between",
+          isGOAT ? "to-yellow-700/12" : "to-blue-800/12",
+          // On small screens stack content to avoid horizontal overflow
+          mode === "small"
+            ? "flex-col 2xl:aspect-[5/6] lg:aspect-[1]"
+            : "flex-col sm:flex-row",
+        )}
         type="button"
         onClick={onOpen}
       >
         <div className="game flex items-center flex-col">
           <img
             alt={game.gameName}
-            className="max-h-50 w-sm rounded-lg h-64 object-cover"
+            className={clsx(
+              "rounded-lg object-cover w-full",
+              mode === "small"
+                ? "xl:h-50 aspect-[5/3] lg:h-70 md:h-45"
+                : "max-w-[400px]",
+            )}
             src={game.gameImage}
           />
           <h2 className="text-3xl font-bold pt-5">{game.gameName}</h2>
@@ -54,7 +67,10 @@ const RatedGame: React.FC<RatedGameProps> = ({
         <RatingSpan game={game} />
         <Dropdown>
           <DropdownTrigger
-            className={`cursor-pointer w-6 h-6 absolute ${mode === "small" ? "bottom-2" : "top-5"} right-5 opacity-30 transition-all hover:scale-105 hover:opacity-100`}
+            className={clsx(
+              "cursor-pointer w-6 h-6 absolute opacity-30 transition-all hover:scale-105 hover:opacity-100",
+              mode === "small" ? "bottom-2 right-2" : "top-5 right-5",
+            )}
           >
             <Trash />
           </DropdownTrigger>

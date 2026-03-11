@@ -33,7 +33,39 @@ export const saveRatedGame = (obj: RatedGameType) => {
   }
 };
 
-export const setFirstVisit = () => {
+export const loadUserData = () => {
   if (typeof window === "undefined") return [];
-  localStorage.setItem(USER, JSON.stringify({ noFirstVisit: true }));
+  try {
+    const raw = localStorage.getItem(USER);
+
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    console.error("Error while loading scale mode");
+
+    return [];
+  }
+};
+
+type ScaleMode = "medium" | "small" | "big";
+type UserData = {
+  scaleMode?: ScaleMode;
+  noFirstVisit?: boolean;
+};
+
+const updateUserData = (patch: Partial<UserData>) => {
+  if (typeof window === "undefined") return;
+
+  const current = loadUserData();
+  const safeCurrent: UserData =
+    current && !Array.isArray(current) ? (current as UserData) : {};
+
+  localStorage.setItem(USER, JSON.stringify({ ...safeCurrent, ...patch }));
+};
+
+export const setScaleMode = (mode: ScaleMode) => {
+  updateUserData({ scaleMode: mode });
+};
+
+export const setFirstVisit = () => {
+  updateUserData({ noFirstVisit: true });
 };
