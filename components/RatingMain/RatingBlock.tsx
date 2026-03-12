@@ -1,7 +1,7 @@
 "use client";
 
 import { Slider } from "@heroui/slider";
-import { Button } from "@heroui/react";
+import { Button, Card } from "@heroui/react";
 import { useEffect, useMemo, useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "@/app/shared/utils/hooksRedux";
@@ -14,8 +14,6 @@ import { Spinner } from "@heroui/spinner";
 
 const RatingBlock = () => {
   const { rateGame, getRating, loading, isAuthenticated } = useGameRatings();
-  const dispatch = useAppDispatch();
-  const { setScore } = rateSlice.actions;
   const { game } = useAppSelector((state) => state.rateSlice);
 
   const [Story, setStory] = useState<number>(4);
@@ -64,7 +62,6 @@ const RatingBlock = () => {
     });
 
     onPress();
-    dispatch(setScore(resultValue));
   };
 
   const sliders: SliderConfig[] = [
@@ -95,7 +92,7 @@ const RatingBlock = () => {
     {
       key: "Sub",
       label: "Общие впечатления",
-      className: "col-span-2 w-full",
+      className: "lg:col-span-2 lg:pt-0 pt-6 w-full",
       color: "primary",
       setter: setSub,
       value: Sub,
@@ -111,13 +108,13 @@ const RatingBlock = () => {
   }, [Story, Visual, Gameplay, Tech, Sub]);
 
   return (
-    <div className="flex flex-col bg-gray p-7 rounded-lg w-full max-w-3xl">
+    <Card className="flex flex-col bg-gray p-7 rounded-lg w-full lg:min-w-xl max-w-3xl">
       <div>
         <h2 className="text-3xl font-semibold mb-16">
           {isGameSelected ? "Оцените эту игру" : "Сначала выберети игру"}
         </h2>
       </div>
-      <div className="inline-grid w-full grid-rows-2 grid-cols-2 gap-x-10 gap-y-8 items-center">
+      <div className="flex flex-col lg:inline-grid w-full lg:grid-rows-2 lg:grid-cols-2 gap-x-10 gap-y-8 items-center">
         {sliders.map(({ key, label, className, color, setter, value }) => {
           const sliderColor: "primary" | "secondary" = color ?? "secondary";
 
@@ -143,7 +140,7 @@ const RatingBlock = () => {
         })}
       </div>
       <div className="flex mt-20 justify-between">
-        <h1 className="text-7xl font-bold">
+        <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold">
           {isGameSelected ? resultValue : "..."}
         </h1>
         <Button
@@ -177,7 +174,7 @@ const RatingBlock = () => {
             : "Войти"}
         </Button>
       </div>
-    </div>
+    </Card>
   );
 };
 
