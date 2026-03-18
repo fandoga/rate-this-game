@@ -1,16 +1,14 @@
 "use client";
 
 import { Slider } from "@heroui/slider";
-import { Button, Card } from "@heroui/react";
-import { useEffect, useMemo, useState } from "react";
+import { Card } from "@heroui/react";
+import { useEffect, useState } from "react";
 
-import { useAppDispatch, useAppSelector } from "@/app/shared/utils/hooksRedux";
-import { rateSlice } from "@/store/reducers/rateSlice";
+import { useAppSelector } from "@/app/shared/utils/hooksRedux";
 import { SliderConfig } from "@/app/shared/types";
 import { useGameRatings } from "@/app/shared/hooks/useGameRatings";
-import { signIn } from "next-auth/react";
-import { check } from "@/app/shared/utils/icons";
-import { Spinner } from "@heroui/spinner";
+import { getResultValue } from "./lib/resultValue";
+import { RateButton } from "@/components";
 
 const RatingBlock = () => {
   const { rateGame, getRating, loading, isAuthenticated } = useGameRatings();
@@ -25,6 +23,8 @@ const RatingBlock = () => {
   const [isPressed, setPress] = useState(false);
   const [isRated, setRated] = useState(false);
   const isGameSelected = game.id > 0;
+
+  const resultValue = getResultValue({ Story, Visual, Gameplay, Tech, Sub });
 
   const onGameChange = () => {
     setRated(false);
@@ -103,10 +103,6 @@ const RatingBlock = () => {
     setPress(true);
   };
 
-  const resultValue: number = useMemo(() => {
-    return Math.floor((Story + Visual + Gameplay + Tech) * 1.4 + Sub * 4.4);
-  }, [Story, Visual, Gameplay, Tech, Sub]);
-
   return (
     <Card className="flex flex-col bg-gray p-7 rounded-lg w-full lg:min-w-xl max-w-3xl">
       <div>
@@ -143,36 +139,16 @@ const RatingBlock = () => {
         <h1 className="text-5xl lg:text-6xl xl:text-7xl font-bold">
           {isGameSelected ? resultValue : "..."}
         </h1>
-        <Button
-          className={`transform-all shadow-pink-400/50 ${isPressed ? "shadow-lg" : ""}`}
-          color={"secondary"}
-          isDisabled={!isGameSelected || isPressed}
-          size="lg"
-          startContent={
-            isPressed ? (
-              check
-            ) : loading ? (
-              <Spinner color="white" size="sm" />
-            ) : (
-              ""
-            )
-          }
-          onClick={() => {
-            if (isAuthenticated) {
-              handleRate();
-            } else {
-              signIn("google");
-            }
+        <RateButton
+          {...{
+            isAuthenticated,
+            isGameSelected,
+            isPressed,
+            isRated,
+            loading,
           }}
-        >
-          {isAuthenticated
-            ? isPressed
-              ? "Оценка принята"
-              : isRated
-                ? "Переоценить"
-                : "Подтвердить"
-            : "Войти"}
-        </Button>
+          handleRate={handleRate}
+        />
       </div>
     </Card>
   );
