@@ -9,17 +9,13 @@ import { RatedGameDBType } from "@/app/shared/types";
 import ScaleDropdown from "./ScaleDropdown";
 import { loadUserData } from "@/app/shared/utils/localStorage";
 
-type ScaleMode = "medium" | "small" | "big";
+type ScaleMode = "small" | "big";
 
 interface RatedGamesProps {
   ratingList: RatedGameDBType[];
-  onRemoveRating: (gameId: string) => void | Promise<void>;
 }
 
-const RatedGamesList: React.FC<RatedGamesProps> = ({
-  ratingList,
-  onRemoveRating,
-}) => {
+const RatedGamesList: React.FC<RatedGamesProps> = ({ ratingList }) => {
   const [scaleMode, setScaleMode] = useState<ScaleMode>("small");
 
   useEffect(() => {
@@ -33,7 +29,6 @@ const RatedGamesList: React.FC<RatedGamesProps> = ({
   const gridClassName = clsx(
     "pt-6 grid w-full gap-6",
     scaleMode === "big" && "grid-cols-1",
-    scaleMode === "medium" && "grid-cols-2",
     scaleMode === "small" &&
       "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4",
   );
@@ -43,12 +38,7 @@ const RatedGamesList: React.FC<RatedGamesProps> = ({
       <ScaleDropdown mode={scaleMode} setter={setScaleMode} />
       <div className={gridClassName}>
         {ratingList?.map((game) => (
-          <RatedGame
-            mode={scaleMode}
-            key={game.id}
-            game={game}
-            onRemoveRating={onRemoveRating}
-          />
+          <RatedGame mode={scaleMode} key={game.id} game={game} />
         ))}
       </div>
     </section>

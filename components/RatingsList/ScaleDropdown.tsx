@@ -11,13 +11,12 @@ import {
 import { setScaleMode } from "@/app/shared/utils/localStorage";
 
 interface ScaleDropdownProps {
-  mode: "medium" | "small" | "big";
-  setter: Dispatch<SetStateAction<"medium" | "small" | "big">>;
+  mode: "small" | "big";
+  setter: Dispatch<SetStateAction<"small" | "big">>;
 }
 
 const ScaleDropdown: React.FC<ScaleDropdownProps> = ({ mode, setter }) => {
-  const labelMap: Record<"medium" | "small" | "big", string> = {
-    medium: "Средние значки",
+  const labelMap: Record<"small" | "big", string> = {
     small: "Мелкие значки",
     big: "Крупные значки",
   };
@@ -32,13 +31,12 @@ const ScaleDropdown: React.FC<ScaleDropdownProps> = ({ mode, setter }) => {
         selectionMode="single"
         variant="flat"
         onSelectionChange={(keys) => {
-          const key = Array.from(keys)[0] as "medium" | "small" | "big";
+          const key = Array.from(keys)[0] as "small" | "big";
           setter(key);
           setScaleMode(key);
         }}
       >
         <DropdownItem key="big">Крупные значки</DropdownItem>
-        <DropdownItem key="medium">Средние значки</DropdownItem>
         <DropdownItem key="small">Мелкие значки</DropdownItem>
       </DropdownMenu>
     </Dropdown>

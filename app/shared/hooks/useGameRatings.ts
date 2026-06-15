@@ -85,9 +85,6 @@ export function useGameRatings() {
       setRatings((prev) => {
         const updated = prev.filter((r) => r.gameId !== gameId);
 
-        if (!isAuthenticated) {
-        }
-
         return updated;
       });
     },

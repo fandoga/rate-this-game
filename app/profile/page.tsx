@@ -33,7 +33,7 @@ export default function Profile() {
   return (
     <div className="flex flex-col items-center gap-10 justify-center">
       {ratings.length > 0 ? (
-        <RatedGamesList onRemoveRating={removeRating} ratingList={ratings} />
+        <RatedGamesList ratingList={ratings} />
       ) : (
         <div className="text-center text-6xl">
           <h1 className="text-4xl font-bold pb-12">

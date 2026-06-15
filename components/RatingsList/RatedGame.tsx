@@ -8,25 +8,13 @@ import RatedGameModal from "./RatedGameModal";
 import RatingSpan from "./RatingSpan";
 
 import { RatedGameDBType } from "@/app/shared/types";
-import { Trash } from "@/app/shared/utils/icons";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from "@heroui/react";
 
 type RatedGameProps = {
   game: RatedGameDBType;
-  onRemoveRating: (gameId: string) => void | Promise<void>;
-  mode: "medium" | "small" | "big";
+  mode: "small" | "big";
 };
 
-const RatedGame: React.FC<RatedGameProps> = ({
-  game,
-  onRemoveRating,
-  mode,
-}) => {
+const RatedGame: React.FC<RatedGameProps> = ({ game, mode }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const isGOAT = game.summary === 100;
@@ -41,51 +29,47 @@ const RatedGame: React.FC<RatedGameProps> = ({
       <button
         aria-label={`Open rated game: ${game.gameName}`}
         className={clsx(
-          "relative cursor-pointer rounded-lg bg-linear-to-r from-gray p-5 w-full h-full flex items-center justify-between",
+          "relative cursor-pointer rounded-lg bg-linear-to-r from-gray w-full h-full flex items-center justify-center",
           isGOAT ? "to-yellow-700/12" : "to-blue-800/12",
-          // On small screens stack content to avoid horizontal overflow
           mode === "small"
-            ? "flex-col 2xl:aspect-[5/6] lg:aspect-[1]"
-            : "flex-col sm:flex-row",
+            ? "flex-col aspect-[9/3] 2xl:aspect-[5/6] lg:aspect-[1] p-2"
+            : "flex-col 2xl:aspect-[5/6] p-5",
         )}
         type="button"
-        onClick={onOpen}
+        onClickCapture={(e) => {
+          e.stopPropagation();
+          onOpen();
+        }}
       >
-        <div className="game flex items-center flex-col">
+        <div
+          className={clsx(
+            "game flex items-center gap-3 justify-between w-full",
+            mode === "small" ? "flex-row" : "flex-col",
+          )}
+        >
           <img
             alt={game.gameName}
             className={clsx(
-              "rounded-lg object-cover w-full",
+              "rounded-lg object-cover bg-gray-900 aspect-[5/3] w-full",
               mode === "small"
-                ? "xl:h-50 aspect-[5/3] lg:h-70 md:h-45"
+                ? "xl:h-50 max-w-34 ] lg:h-70 md:h-45"
                 : "max-w-[400px]",
             )}
             src={game.gameImage}
           />
-          <h2 className="text-3xl font-bold pt-5">{game.gameName}</h2>
-        </div>
-        <RatingSpan game={game} />
-        <Dropdown>
-          <DropdownTrigger
-            className={clsx(
-              "cursor-pointer w-6 h-6 absolute opacity-30 transition-all hover:scale-105 hover:opacity-100",
-              mode === "small" ? "bottom-2 right-2" : "top-5 right-5",
-            )}
-          >
-            <Trash />
-          </DropdownTrigger>
-          <DropdownMenu aria-label="Static Actions">
-            <DropdownItem key="new">Отмена</DropdownItem>
-            <DropdownItem
-              onClick={() => onRemoveRating(game.gameId)}
-              key="delete"
-              className="text-danger"
-              color="danger"
+          <div className="flex flex-col items-center justify-center text-center">
+            <h2
+              className={clsx(
+                "font-bold ",
+                mode === "small" ? "text-xl" : "text-3xl pt-5",
+              )}
             >
-              Удалить
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
+              {game.gameName}
+            </h2>
+            {mode === "small" && <RatingSpan mode={mode} game={game} />}
+          </div>
+        </div>
+        {mode === "big" && <RatingSpan mode={mode} game={game} />}
       </button>
     </>
   );
