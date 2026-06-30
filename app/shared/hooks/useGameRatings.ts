@@ -3,13 +3,23 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 
-import { GameType, RatedGameDBType, RatedGameType } from "../types";
+import { GameType, RatedGameDBType } from "../types";
 
 export function useGameRatings() {
   const { data: session, status } = useSession();
   const [ratings, setRatings] = useState<RatedGameDBType[]>([]);
   const [loading, setLoading] = useState(true);
-  const isAuthenticated = status === "authenticated";
+  const [authenticated, setAuthenticated] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      setAuthenticated(true);
+    } else if (status === "unauthenticated") {
+      setAuthenticated(false);
+    }
+  }, [status]);
+
+  const isAuthenticated = authenticated ?? Boolean(session?.user);
 
   // Загрузка оценок
   const fetchRatings = useCallback(async () => {

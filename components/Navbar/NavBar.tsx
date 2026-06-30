@@ -14,7 +14,7 @@ const NavBar = () => {
     <div className="flex justify-between w-full gap-2 mx-auto md:px-10 px-5 pb-4 pt-4 bg-gray items-center">
       <NavButton href="/" />
       <Search />
-      {isAuthenticated ? (
+      {isAuthenticated || session === undefined ? (
         <>
           <NavButton href="/profile" img={session?.user.image} />
           <div className="group fixed z-50 bottom-6 right-6">

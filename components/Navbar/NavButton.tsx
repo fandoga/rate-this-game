@@ -1,5 +1,8 @@
+"use client";
+
 import { Link } from "@heroui/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { UserRound } from "lucide-react";
 
 interface NavButtonProps {
   href: string;
@@ -7,13 +10,24 @@ interface NavButtonProps {
 }
 
 const NavButton: React.FC<NavButtonProps> = ({ href, img }) => {
+  const [imgError, setImgError] = useState(false);
+
   return (
     <Link
       className="flex shrink-0 items-center justify-center overflow-hidden transition-all duration-300 bg-default-100 rounded-full w-10 h-10 hover:scale-110 hover:shadow-lg shadow-indigo-500/70"
       href={href}
     >
-      {img && img !== null ? (
-        <img src={img} alt="profile_img" className="" />
+      {img ? (
+        !imgError ? (
+          <img
+            src={img}
+            alt="profile_img"
+            className="w-full h-full object-cover"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <UserRound color="white" />
+        )
       ) : (
         <svg
           className="size-6"
