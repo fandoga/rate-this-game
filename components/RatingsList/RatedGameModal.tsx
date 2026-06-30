@@ -52,6 +52,7 @@ const RatedGameModal: React.FC<RatedGameModalProps> = ({
     <Modal
       isOpen={isOpen}
       onOpenChange={onOpenChange}
+      className="max-w-80 overflow-hidden"
       classNames={{ wrapper: "flex items-center justify-center" }}
     >
       <ModalContent
@@ -74,7 +75,7 @@ const RatedGameModal: React.FC<RatedGameModalProps> = ({
                     <MobileTooltip
                       content="Общ. впечатления"
                       className="text-blue-500"
-                      spanClass="lg:text-4xl mt-4 text-3xl inline-flex w-6 justify-center cursor-default transition-all hover:scale-120"
+                      spanClass="mt-4 text-3xl inline-flex w-6 justify-center cursor-default transition-all hover:scale-120"
                       data={sel_game.sub}
                     />
                   </div>

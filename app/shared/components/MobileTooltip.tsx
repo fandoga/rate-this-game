@@ -25,8 +25,8 @@ const MobileTooltip: React.FC<MobileTooltipType> = ({
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
         onClick={(e) => {
+          e.stopPropagation();
           setOpen(true);
-          // e.stopPropagation();
         }}
         className={spanClass}
       >

@@ -32,11 +32,11 @@ const RatedGame: React.FC<RatedGameProps> = ({ game, mode }) => {
           "relative cursor-pointer rounded-lg bg-linear-to-r from-gray w-full h-full flex items-center justify-center",
           isGOAT ? "to-yellow-700/12" : "to-blue-800/12",
           mode === "small"
-            ? "flex-col aspect-[9/3] 2xl:aspect-[5/6] lg:aspect-[1] p-2"
+            ? "flex-col aspect-[9/3] p-2 2xl:my-2"
             : "flex-col 2xl:aspect-[5/6] p-5",
         )}
         type="button"
-        onClickCapture={(e) => {
+        onClick={(e) => {
           e.stopPropagation();
           onOpen();
         }}
@@ -50,17 +50,15 @@ const RatedGame: React.FC<RatedGameProps> = ({ game, mode }) => {
           <img
             alt={game.gameName}
             className={clsx(
-              "rounded-lg object-cover bg-gray-900 aspect-[5/3] w-full",
-              mode === "small"
-                ? "xl:h-50 max-w-34 ] lg:h-70 md:h-45"
-                : "max-w-[400px]",
+              "rounded-lg object-cover bg-gray-900 aspect-[5/3]",
+              mode === "small" ? "w-[45%]" : "max-w-[400px] w-full",
             )}
             src={game.gameImage}
           />
-          <div className="flex flex-col items-center justify-center text-center">
+          <div className="flex flex-col items-end justify-center text-center">
             <h2
               className={clsx(
-                "font-bold ",
+                "font-bold text-center w-full",
                 mode === "small" ? "text-xl" : "text-3xl pt-5",
               )}
             >

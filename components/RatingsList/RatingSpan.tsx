@@ -16,8 +16,8 @@ const RatingSpan = ({
 
   const [textClass, setTextClass] = useState(
     clsx(
-      "lg:text-4xl inline-flex w-6 justify-center cursor-default transition-all hover:scale-120",
-      mode === "small" ? "text-lg" : "text-3xl",
+      "inline-flex w-6 justify-center cursor-default transition-all hover:scale-120",
+      mode === "small" ? "text-lg lg:text-[20px]" : "text-3xl",
     ),
   );
 
@@ -56,14 +56,16 @@ const RatingSpan = ({
       </div>
       <div
         className={clsx(
-          `flex items-center shadow-lg justify-center ${isGOAT ? "bg-yellow-500 shadow-yellow-300 lg:w-24 lg:h-24 w-19 h-19" : "bg-blue-900 shadow-blue-800 lg:w-22 lg:h-22"} rounded-full`,
-          mode === "small" ? "w-10 h-10" : "w-18 h-18",
+          `flex items-center shadow-lg justify-center ${isGOAT ? "bg-yellow-500 shadow-yellow-300" : "bg-blue-900 shadow-blue-800"} rounded-full`,
+          mode === "small"
+            ? "w-10 h-10 lg:w-15 lg:h-15 2xl:h-11 2xl:w-11"
+            : "w-18 h-18",
         )}
       >
         <h2
           className={clsx(
-            "lg:text-5xl font-bold",
-            mode === "small" ? "text-lg" : "text-4xl",
+            "font-bold",
+            mode === "small" ? "text-lg lg:text-3xl 2xl:text-xl" : "text-4xl",
           )}
         >
           {game.summary}
